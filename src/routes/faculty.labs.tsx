@@ -18,7 +18,7 @@ export const Route = createFileRoute("/faculty/labs")({
 
 function FacultyLabsPage() {
   const qc = useQueryClient();
-  const { data, isLoading, isError, error: loadError } = useQuery({ queryKey: ["faculty-labs"], queryFn: () => services.facultyResources.labs(), retry: false });
+  const { data, isLoading, isError, error: loadError } = useQuery({ queryKey: ["faculty-labs"], queryFn: () => services.facultyResources.labs(), enabled: typeof window !== "undefined", retry: false });
   const [unitId, setUnitId] = useState("");
   const [title, setTitle] = useState("");
   const [sourceRef, setSourceRef] = useState("");

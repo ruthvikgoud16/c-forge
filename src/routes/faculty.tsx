@@ -8,6 +8,7 @@ import { logoutDest } from "@/lib/session-dest";
 import { Aurora } from "@/components/art/motion";
 
 export const Route = createFileRoute("/faculty")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Faculty Portal — CForge" },

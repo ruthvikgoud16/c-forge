@@ -34,6 +34,7 @@ function FacultyDashboard() {
   const { data: summary, isLoading, isError, error } = useQuery({
     queryKey: ["faculty-summary"],
     queryFn: () => services.faculty.summary(),
+    enabled: typeof window !== "undefined",
     retry: false,
   });
 

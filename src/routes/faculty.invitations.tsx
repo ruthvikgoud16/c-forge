@@ -34,11 +34,13 @@ function FacultyInvitations() {
   const { data: invitations = [], isLoading, isError, error } = useQuery({
     queryKey: ["faculty-invitations"],
     queryFn: () => services.invitations.list(),
+    enabled: typeof window !== "undefined",
     retry: false,
   });
   const { data: roster = [] } = useQuery({
     queryKey: ["faculty-roster"],
     queryFn: () => services.faculty.roster(),
+    enabled: typeof window !== "undefined",
   });
 
   const [filter, setFilter] = useState<"all" | InvitationStatus>("all");

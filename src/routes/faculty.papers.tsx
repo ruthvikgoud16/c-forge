@@ -20,7 +20,7 @@ const emptyQuestion = (): PaperQuestionInput => ({ text: "", topicId: "", marks:
 
 function FacultyPapersPage() {
   const qc = useQueryClient();
-  const { data, isLoading, isError, error: loadError } = useQuery({ queryKey: ["faculty-papers"], queryFn: () => services.facultyResources.papers(), retry: false });
+  const { data, isLoading, isError, error: loadError } = useQuery({ queryKey: ["faculty-papers"], queryFn: () => services.facultyResources.papers(), enabled: typeof window !== "undefined", retry: false });
   const [academicYear, setAcademicYear] = useState("");
   const [semester, setSemester] = useState("");
   const [examType, setExamType] = useState("");

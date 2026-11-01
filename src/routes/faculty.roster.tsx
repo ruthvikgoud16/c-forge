@@ -31,11 +31,13 @@ function FacultyRoster() {
   const { data: roster = [], isLoading, isError, error } = useQuery({
     queryKey: ["faculty-roster"],
     queryFn: () => services.faculty.roster(),
+    enabled: typeof window !== "undefined",
     retry: false,
   });
   const { data: summary } = useQuery({
     queryKey: ["faculty-summary"],
     queryFn: () => services.faculty.summary(),
+    enabled: typeof window !== "undefined",
     retry: false,
   });
 
