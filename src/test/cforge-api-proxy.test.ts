@@ -30,6 +30,19 @@ describe("cforge api proxy", () => {
     expect(headers.get("x-forwarded-host")).toBe("app.example");
     expect(headers.has("host")).toBe(false);
     expect(headers.has("connection")).toBe(false);
+    expect(headers.get("accept-encoding")).toBe("identity");
+  });
+
+  it("strips content-encoding so the browser does not brotli-decode an already-decoded body", () => {
+    const upstream = new Headers({
+      "content-type": "application/json",
+      "content-encoding": "br",
+      "content-length": "12",
+    });
+    const headers = publicResponseHeaders(upstream);
+    expect(headers.get("content-type")).toBe("application/json");
+    expect(headers.has("content-encoding")).toBe(false);
+    expect(headers.has("content-length")).toBe(false);
   });
 
   it("strips Set-Cookie Domain so HttpOnly cookies stay on the public host", () => {

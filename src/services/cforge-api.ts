@@ -156,6 +156,7 @@ async function request(path: string, init: RequestInit = {}) {
 async function readJson<T>(response: Response): Promise<T> {
   const body = await response.json().catch(() => null);
   if (!response.ok) throw new ApiError(response.status, errorText(response.status, body));
+  if (body == null) throw new ApiError(response.status, "The server returned an empty response.");
   return body as T;
 }
 

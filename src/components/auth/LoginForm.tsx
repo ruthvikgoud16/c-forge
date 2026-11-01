@@ -31,18 +31,24 @@ export function LoginForm({ role }: { role: "student" | "faculty" }) {
     setErrors(next);
     if (Object.keys(next).length) return;
     setLoading(true);
-    const res = await services.auth.signIn({ rollNumber: facultyToken ? "" : id, password: facultyToken ? id : pw, role });
-    setLoading(false);
-    if (!res.ok) return setErrors({ form: res.error });
-    if (role === "faculty") {
-      nav({ to: "/faculty" });
-      return;
-    }
     try {
-      nav({ to: await studentHomePath(services) });
+      const res = await services.auth.signIn({ rollNumber: facultyToken ? "" : id, password: facultyToken ? id : pw, role });
+      if (!res.ok) return setErrors({ form: res.error });
+      if (role === "faculty") {
+        nav({ to: "/faculty" });
+        return;
+      }
+      try {
+        nav({ to: await studentHomePath(services) });
+      } catch (cause) {
+        rethrowIfRedirect(cause);
+        nav({ to: "/learn" });
+      }
     } catch (cause) {
       rethrowIfRedirect(cause);
-      nav({ to: "/learn" });
+      setErrors({ form: "Sign in did not finish. Try again." });
+    } finally {
+      setLoading(false);
     }
   }
 

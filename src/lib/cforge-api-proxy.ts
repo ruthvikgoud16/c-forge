@@ -9,6 +9,7 @@ const HOP = new Set([
   "upgrade",
   "host",
   "content-length",
+  "content-encoding",
 ]);
 
 const FORWARD = new Set([
@@ -50,6 +51,7 @@ export function forwardRequestHeaders(request: Request) {
   headers.set("x-forwarded-proto", incoming.protocol.replace(":", "") || "https");
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) headers.set("x-forwarded-for", forwarded);
+  headers.set("accept-encoding", "identity");
   return headers;
 }
 
@@ -76,7 +78,8 @@ export async function proxyCforgeApi(request: Request): Promise<Response> {
     init.body = await request.arrayBuffer();
   }
   const upstream = await fetch(buildUpstreamUrl(request), init);
-  return new Response(upstream.body, {
+  const body = await upstream.arrayBuffer();
+  return new Response(body, {
     status: upstream.status,
     statusText: upstream.statusText,
     headers: publicResponseHeaders(upstream.headers),
