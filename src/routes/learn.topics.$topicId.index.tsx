@@ -5,6 +5,8 @@ import { CodeBlock } from "@/components/common/CodeBlock";
 import { loadTopic, topicHead } from "@/lib/topic-loader";
 import { services } from "@/services";
 import { TOOL_META } from "@/data/tools";
+import { destForTeachingKind, destLink } from "@/lib/teaching";
+import { topicAssessmentId } from "@/lib/assessment";
 import { TopicDiagram } from "@/components/art/TopicDiagram";
 import { ToolPreview } from "@/components/art/ToolPreview";
 
@@ -18,33 +20,49 @@ export const Route = createFileRoute("/learn/topics/$topicId/")({
   component: TopicOverview,
 });
 
+const KIND_COPY: Record<string, string> = {
+  notes: "Structured study notes.",
+  oneshot: "Compact revision sheet.",
+  "mind-map": "Concept graph.",
+  flashcards: "Study deck from the original package.",
+  quick: "Short revision lines from the original package.",
+  concepts: "Concept library from the original package.",
+  examples: "Worked examples from the original lesson.",
+  trace: "Code-tracing prompt. Scored by the original checker.",
+  predict: "Output-prediction prompt. Scored by the original checker.",
+  syntax: "Syntax and terminology from the original package.",
+  practice: "Guided and independent practice, plus knowledge checks.",
+};
+
 function TopicOverview() {
-  const { topic, unit, exercises } = Route.useLoaderData();
+  const { topic, unit, exercises, teaching } = Route.useLoaderData();
   const res = [
-    { to: "/learn/topics/$topicId/lesson", label: "Lesson", d: "Concepts, worked example, trace and practice." },
-    { to: "/learn/topics/$topicId/notes", label: "Notes", d: "Structured study notes." },
-    { to: "/learn/topics/$topicId/resources", label: "One-shot", d: "Compact revision sheet." },
-    { to: "/learn/topics/$topicId/flashcards", label: "Flashcards", d: "Six-card deck." },
-    { to: "/learn/topics/$topicId/mind-map", label: "Mind map", d: "Concept graph." },
-  ] as const;
+    ...(teaching?.availableKinds.length
+      ? [{ to: "/learn/topics/$topicId/lesson" as const, label: "Lesson", d: "Concepts, worked example, trace and practice.", params: { topicId: topic.id } }]
+      : []),
+    ...(teaching?.availableKinds ?? []).map((kind) => {
+      const dest = destLink(destForTeachingKind(topic.id, kind));
+      return { to: dest.to, label: kind === "oneshot" ? "One-shot" : kind.replace("-", " "), d: KIND_COPY[kind] ?? "Original teaching package.", params: dest.params };
+    }),
+  ];
   return (
-    <TopicShell topic={topic} unit={unit}>
+    <TopicShell topic={topic} unit={unit} teaching={teaching}>
       <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
         <div className="space-y-6">
           <p className="text-lg">{topic.summary}</p>
-          <SourceNotice what="Topic text" />
+          <SourceNotice what="Topic text" source={topic.source} />
           <TopicDiagram topic={topic} />
           <div className="grid gap-3 sm:grid-cols-2">
             {res.map((r) => (
-              <Link key={r.to} to={r.to} params={{ topicId: topic.id }} className="lift press glass-panel rounded-2xl p-4">
-                <span className="font-display text-lg">{r.label}</span>
+              <Link key={`${r.to}-${r.label}`} to={r.to} params={r.params} className="lift press glass-panel rounded-2xl p-4">
+                <span className="font-display text-lg capitalize">{r.label}</span>
                 <span className="block text-sm text-muted-foreground">{r.d}</span>
               </Link>
             ))}
-            <Link to="/learn/assessments/$assessmentId" params={{ assessmentId: `ta-${topic.id}` }} className="lift press rounded-2xl bg-gradient-to-br from-copper to-ember p-4 text-pearl [&_span]:!text-pearl">
+            {teaching?.availableKinds.length ? <Link to="/learn/assessments/$assessmentId" params={{ assessmentId: topicAssessmentId(topic.id) }} className="lift press rounded-2xl bg-gradient-to-br from-copper to-ember p-4 text-pearl [&_span]:!text-pearl">
               <span className="font-display text-lg">Topic assessment</span>
-              <span className="block text-sm text-muted-foreground">Preview quiz for this package.</span>
-            </Link>
+              <span className="block text-sm text-muted-foreground">Server-scored CForge practice. Not an official exam.</span>
+            </Link> : null}
           </div>
           <CodeBlock code={topic.example.code} output={topic.example.output} title="Worked example" />
         </div>

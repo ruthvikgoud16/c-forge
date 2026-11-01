@@ -1,6 +1,6 @@
 import { Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import type { FacultySummary } from "@/domain/types";
-import { units } from "@/data/fixtures/curriculum";
+import type { FacultySummary, Unit } from "@/domain/types";
+import { IS_DEMO } from "@/services";
 import { Donut } from "@/components/art/Ring";
 import { unitGradient } from "@/components/art/UnitArt";
 
@@ -8,9 +8,22 @@ const C = { mastered: "oklch(0.62 0.17 150)", demonstrated: "oklch(0.78 0.16 70)
 
 export const ROSTER_COLORS = { active: "oklch(0.62 0.17 150)", invited: "oklch(0.7 0.15 230)", notInvited: "oklch(0.75 0.01 260)" };
 
+export function unitAxisLabel(unitId: string, units: Unit[]) {
+  const official = units.find((x) => x.id === unitId);
+  return official ? `U${official.number}` : unitId;
+}
+
 /** Charts for the faculty overview. All values come from the summary service. */
-export function FacultyCharts({ s }: { s: FacultySummary }) {
-  const unitData = s.unitProgress.map((u) => ({ name: `U${units.find((x) => x.id === u.unitId)?.number}`, Mastered: u.mastered, Demonstrated: u.demonstrated, "Needs practice": u.needsPractice, id: u.unitId }));
+export function FacultyCharts({ s, units }: { s: FacultySummary; units: Unit[] }) {
+  const practised = IS_DEMO ? "Demonstrated" : "Practised";
+  const opened = IS_DEMO ? "Needs practice" : "Opened";
+  const unitData = s.unitProgress.map((u) => ({
+    name: unitAxisLabel(u.unitId, units),
+    Mastered: u.mastered,
+    [practised]: u.demonstrated,
+    [opened]: u.needsPractice,
+    id: u.unitId,
+  }));
   const buckets = s.assessmentBuckets.map((b) => ({ name: b.label, count: b.count ?? 0, hidden: b.count === null }));
   const bucketColors = ["oklch(0.6 0.2 25)", "oklch(0.78 0.16 70)", "oklch(0.7 0.15 230)", "oklch(0.62 0.17 150)"];
   return (
@@ -39,8 +52,8 @@ export function FacultyCharts({ s }: { s: FacultySummary }) {
               <Tooltip cursor={{ fill: "oklch(0.6 0.2 255 / 0.06)" }} contentStyle={{ borderRadius: 14, border: "1px solid white", background: "oklch(1 0 0 / 0.9)" }} />
               <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="Mastered" fill={C.mastered} radius={[6, 6, 0, 0]} animationDuration={1100} />
-              <Bar dataKey="Demonstrated" fill={C.demonstrated} radius={[6, 6, 0, 0]} animationDuration={1300} />
-              <Bar dataKey="Needs practice" fill={C.needs} radius={[6, 6, 0, 0]} animationDuration={1500} />
+              <Bar dataKey={practised} fill={C.demonstrated} radius={[6, 6, 0, 0]} animationDuration={1300} />
+              <Bar dataKey={opened} fill={C.needs} radius={[6, 6, 0, 0]} animationDuration={1500} />
             </BarChart>
           </ResponsiveContainer>
         </div>

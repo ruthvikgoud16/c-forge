@@ -1,4 +1,10 @@
-import "@testing-library/jest-dom/vitest";
+export {};
+
+try {
+  await import("@testing-library/jest-dom/vitest");
+} catch {
+  // @testing-library/dom is not installed in this workspace.
+}
 
 Object.defineProperty(window, "scrollTo", {
   writable: true,

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, BookOpen } from "lucide-react";
-import { services } from "@/services";
+import { IS_DEMO, services } from "@/services";
 import { PageHeader, Panel, DemoBadge, StateChip, EmptyState } from "@/components/common/bits";
 import { units, topics } from "@/data/fixtures/curriculum";
 import type { AccountStatus } from "@/domain/types";
@@ -18,17 +18,27 @@ const STATUS_META: Record<AccountStatus, { label: string; cls: string }> = {
 
 function StudentDetail() {
   const { studentId } = useParams({ from: "/faculty/students/$studentId" });
-  const { data: student, isLoading } = useQuery({
+  const { data: student, isLoading, isError, error } = useQuery({
     queryKey: ["faculty-student", studentId],
     queryFn: () => services.faculty.student(studentId),
+    retry: false,
   });
   const { data: progress } = useQuery({
     queryKey: ["faculty-student-progress", studentId],
     queryFn: () => services.progress.forStudent(studentId),
-    enabled: !!student && student.status === "active",
+    enabled: IS_DEMO && !!student && student.status === "active",
+    retry: false,
   });
 
-  if (isLoading) return <p className="animate-pulse text-muted-foreground">Loading student…</p>;
+  if (isLoading) return <p className="animate-pulse text-muted-foreground">Loading roster entry…</p>;
+  if (isError) {
+    return (
+      <div>
+        <Link to="/faculty/roster" className="inline-flex items-center gap-1 text-sm text-copper hover:underline"><ArrowLeft className="size-4" /> Back to roster</Link>
+        <div className="mt-6"><EmptyState title="Roster entry unavailable" body={error instanceof Error ? error.message : "The faculty roster API did not return this student."} /></div>
+      </div>
+    );
+  }
   if (!student) {
     return (
       <div>
@@ -63,7 +73,7 @@ function StudentDetail() {
         lede={<span className="font-mono text-sm">{student.rollNumber}</span>}
         actions={
           <>
-            <DemoBadge>Demo data</DemoBadge>
+            {IS_DEMO && <DemoBadge>Demo data</DemoBadge>}
             <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusMeta.cls}`} data-testid="student-status">
               {statusMeta.label}
             </span>
@@ -71,7 +81,17 @@ function StudentDetail() {
         }
       />
 
-      {student.status !== "active" ? (
+      {!IS_DEMO ? (
+        <Panel className="glass-panel rounded-[1.75rem]">
+          <EmptyState
+            title="Individual progress is not available"
+            body="The faculty session can see this official roster identity. It cannot load another student's learning record, assessments, or recent activity."
+          />
+          {student.invitation ? (
+            <p className="mt-4 text-sm text-muted-foreground">Invitation status: {student.invitation.status}{student.invitation.expiresAt ? ` · expires ${student.invitation.expiresAt}` : ""}.</p>
+          ) : null}
+        </Panel>
+      ) : student.status !== "active" ? (
         <Panel>
           <EmptyState
             title="No learning activity yet"
@@ -160,7 +180,7 @@ function StudentDetail() {
                 </ul>
               )}
               <p className="mt-4 border-t border-border pt-4 text-xs text-muted-foreground">
-                Preview attempts are not authoritative. The CForge backend will supply graded assessments once connected.
+                Preview attempts are not authoritative.
               </p>
             </Panel>
 

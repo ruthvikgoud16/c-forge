@@ -5,7 +5,8 @@ import { PageHeader, DemoBadge } from "@/components/common/bits";
 import { highlightC } from "@/components/common/CodeBlock";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { services } from "@/services";
+import { IS_DEMO, services } from "@/services";
+import { rethrowIfRedirect } from "@/services/cforge-api";
 import type { PreviewResult } from "@/domain/types";
 import { topicHead } from "@/lib/topic-loader";
 import { Ring } from "@/components/art/Ring";
@@ -21,7 +22,20 @@ export const Route = createFileRoute("/learn/assessments/$assessmentId")({
   component: Runner,
 });
 
-const TYPE_LABEL = { "single-choice": "Single choice", "predict-output": "Predict the output", "true-false": "True / false" };
+const TYPE_LABEL: Record<string, string> = {
+  "single-choice": "Single choice",
+  "predict-output": "Predict the output",
+  "true-false": "True / false",
+  "short-answer": "Short answer",
+  concept: "Concept",
+  syntax: "Syntax",
+  trace: "Trace",
+  predict: "Predict",
+  debug: "Debug",
+  algorithm: "Algorithm",
+  short_answer: "Short answer",
+  coding: "Coding",
+};
 
 function Runner() {
   const a = Route.useLoaderData();
@@ -29,11 +43,18 @@ function Runner() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [confirm, setConfirm] = useState(false);
   const [result, setResult] = useState<PreviewResult | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const q = a.questions[i]!;
   const answered = Object.keys(answers).length;
 
   async function submit() {
-    setResult(await services.assessments.previewScore(a.id, answers));
+    try {
+      setResult(await services.assessments.previewScore(a.id, answers));
+      setSubmitError(null);
+    } catch (error) {
+      rethrowIfRedirect(error);
+      setSubmitError(error instanceof Error ? error.message : "The assessment could not be submitted.");
+    }
     setConfirm(false);
   }
 
@@ -42,7 +63,7 @@ function Runner() {
   if (result) {
     return (
       <>
-        <PageHeader crumbs={crumbs} eyebrow={`${a.kind} assessment · preview result`} title={`${result.correct} of ${result.total} correct`} lede="This score was calculated in your browser for preview only. It is not authoritative and has not been saved." actions={<DemoBadge>Preview result</DemoBadge>} />
+        <PageHeader crumbs={crumbs} eyebrow={`${a.kind} assessment`} title={`${result.correct} of ${result.total} correct`} lede={result.isPreview ? "This score was calculated in your browser for preview only. It is not authoritative and has not been saved." : "This score was calculated on the server. Expected answers are not shown."} actions={result.isPreview ? <DemoBadge>Preview result</DemoBadge> : undefined} />
         <section className="glass-panel cf-pop mb-8 grid items-center gap-6 rounded-[2rem] p-6 md:grid-cols-[auto_1fr]" data-testid="assessment-result-summary">
           <Ring value={result.correct} max={result.total} size={150} stroke={14} color={result.correct / result.total >= 0.7 ? "var(--color-success)" : result.correct / result.total >= 0.4 ? "var(--color-gold)" : "var(--color-destructive)"}>
             <span><span className="block font-display text-4xl">{Math.round((result.correct / result.total) * 100)}%</span><span className="text-[11px] text-muted-foreground">{result.correct}/{result.total}</span></span>
@@ -61,13 +82,22 @@ function Runner() {
             return (
               <li key={qq.id} className={`cf-pop glass-panel rounded-2xl border-l-4 p-4 ${r.correct ? "!border-l-success" : "!border-l-destructive"}`} style={{ animationDelay: `${n * 50}ms` }}>
                 <p className="flex items-start gap-2 font-medium">{r.correct ? <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" /> : <XCircle className="mt-0.5 size-4 shrink-0 text-destructive" />}{n + 1}. {qq.prompt}</p>
-                <p className="mt-2 text-sm text-muted-foreground">Correct answer: <span className="text-foreground">{qq.options.find((o) => o.id === r.correctOptionId)?.label}</span></p>
+                {result.isPreview && r.correctOptionId ? <p className="mt-2 text-sm text-muted-foreground">Correct answer: <span className="text-foreground">{qq.options.find((o) => o.id === r.correctOptionId)?.label}</span></p> : <p className="mt-2 text-sm text-muted-foreground">{r.correct ? "Marked correct by the server." : "Marked incorrect by the server. The expected answer stays on the server."}</p>}
               </li>
             );
           })}
         </ol>
-        <div className="mt-6 flex gap-2">
+        <div className="mt-6 flex flex-wrap gap-2">
           <Button variant="hero" className="press rounded-full" onClick={() => { setResult(null); setAnswers({}); setI(0); }} data-testid="assessment-retry">Retry</Button>
+          {a.kind === "topic" ? (
+            <>
+              <Button asChild variant="quiet"><Link to="/learn/topics/$topicId/lesson" params={{ topicId: a.scopeId }}>Lesson</Link></Button>
+              <Button asChild variant="quiet"><Link to="/learn/topics/$topicId/flashcards" params={{ topicId: a.scopeId }}>Flashcards</Link></Button>
+              <Button asChild variant="quiet"><Link to="/studio">Studio</Link></Button>
+            </>
+          ) : (
+            <Button asChild variant="quiet"><Link to="/learn/units/$unitId" params={{ unitId: a.scopeId }}>Unit</Link></Button>
+          )}
           <Button asChild variant="quiet"><Link to="/learn/assessments">All assessments</Link></Button>
         </div>
       </>
@@ -76,15 +106,20 @@ function Runner() {
 
   return (
     <>
-      <PageHeader crumbs={crumbs} eyebrow={`${a.kind} assessment`} title={a.title} actions={<DemoBadge>Demonstration questions</DemoBadge>} />
+      <PageHeader crumbs={crumbs} eyebrow={`${a.kind} assessment`} title={a.title} actions={IS_DEMO ? <DemoBadge>Demonstration questions</DemoBadge> : undefined} />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_14rem]">
         <section key={q.id} className="glass-panel cf-pop relative overflow-hidden rounded-[2rem] p-6 md:p-8" aria-labelledby="qprompt" data-testid="assessment-question">
           <span className="pointer-events-none absolute -bottom-12 right-2 select-none font-display text-[8rem] leading-none text-copper/10" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
-          <div className="relative flex items-center justify-between text-sm"><span className="font-mono">Question {i + 1} / {a.questions.length}</span><span className="rounded-full bg-copper/10 px-3 py-0.5 text-xs text-copper">{TYPE_LABEL[q.type]}</span></div>
+          <div className="relative flex items-center justify-between text-sm"><span className="font-mono">Question {i + 1} / {a.questions.length}</span><span className="rounded-full bg-copper/10 px-3 py-0.5 text-xs text-copper">{TYPE_LABEL[q.family ?? q.type] ?? (q.options.length === 0 ? "Short answer" : TYPE_LABEL[q.type])}</span></div>
           <div className="relative mt-3 h-1.5 overflow-hidden rounded-full bg-foreground/8"><div className="h-full rounded-full bg-gradient-to-r from-copper to-ember transition-all duration-500" style={{ width: `${((i + 1) / a.questions.length) * 100}%` }} /></div>
           <h2 id="qprompt" className="relative mt-5 font-display text-2xl">{q.prompt}</h2>
           {q.code && <pre className="mt-4 overflow-x-auto rounded-xl bg-code p-4 font-mono text-xs leading-5 text-code-foreground">{highlightC(q.code)}</pre>}
-          <fieldset className="mt-6 space-y-2">
+          {q.options.length === 0 ? (
+            <div className="relative mt-6">
+              <label htmlFor="short-answer" className="text-sm font-medium">Your answer</label>
+              <textarea id="short-answer" value={answers[q.id] ?? ""} onChange={(e) => setAnswers((s) => ({ ...s, [q.id]: e.target.value }))} className="mt-2 min-h-28 w-full rounded-2xl border border-white bg-white/50 p-3 outline-none focus:border-copper" />
+            </div>
+          ) : <fieldset className="mt-6 space-y-2">
             <legend className="sr-only">Options</legend>
             {q.options.map((o, k) => {
               const sel = answers[q.id] === o.id;
@@ -96,7 +131,7 @@ function Runner() {
                 </label>
               );
             })}
-          </fieldset>
+          </fieldset>}
           <div className="mt-6 flex justify-between">
             <Button variant="quiet" disabled={i === 0} onClick={() => setI(i - 1)}>← Previous</Button>
             {i < a.questions.length - 1 ? <Button variant="ink" onClick={() => setI(i + 1)}>Next →</Button> : <Button variant="hero" onClick={() => setConfirm(true)}>Submit</Button>}
@@ -118,7 +153,7 @@ function Runner() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Submit assessment?</AlertDialogTitle>
-            <AlertDialogDescription>{answered < a.questions.length ? `${a.questions.length - answered} question(s) are unanswered. ` : ""}In demo mode the result is a preview and is not saved.</AlertDialogDescription>
+            <AlertDialogDescription>{answered < a.questions.length ? `${a.questions.length - answered} question(s) are unanswered. ` : ""}{IS_DEMO ? "In demo mode the result is a preview and is not saved." : "The server scores this attempt. Expected answers are not returned."}{submitError ? ` ${submitError}` : ""}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter><AlertDialogCancel>Keep working</AlertDialogCancel><AlertDialogAction onClick={submit}>Submit</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>

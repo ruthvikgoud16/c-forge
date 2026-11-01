@@ -1,29 +1,13 @@
-# Welcome to your Lovable project
+# CForge
 
-This project was built with [Lovable](https://lovable.dev).
+Private C programming academy. This repository is the Emergent frontend.
 
-## Build with Lovable
+- Student login: `/login`
+- Faculty login: `/faculty-login`
+- Browser calls stay same-origin (`/api`)
+- SSR and the production `/api` proxy use server-only `CFORGE_API_ORIGIN`
+- The original Next.js API lives in a separate repository: `https://github.com/ruthvikgoud16/c-forge-back`
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Do not commit `.env.local`, faculty tokens, roster CSV files, or `VITE_*` API URLs.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+Do not set `VITE_CFORGE_DEMO` in production.

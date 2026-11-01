@@ -16,8 +16,9 @@ dist-ssr
 .nitro
 *.local
 
-# Wrangler / Cloudflare
+# Wrangler / Cloudflare / Vercel
 .wrangler/
+.vercel/
 .dev.vars
 
 # Editor directories and files
@@ -30,3 +31,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Not part of this frontend repository
+backend/
+emergent-source/
+render.yaml
+
+# Secrets and local data
+.env
+.env.*
+!.env.example
+db/cforge_verified_roster_2026-10-31.csv
+*.dump
+*.sql.gz
+*.backup
+*.pem
+*.key
+secrets/
+package-lock.json

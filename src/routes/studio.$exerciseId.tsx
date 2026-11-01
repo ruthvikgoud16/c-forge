@@ -1,13 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Loader2, Play, Send, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DemoBadge } from "@/components/common/bits";
 import { services } from "@/services";
+import { rethrowIfRedirect } from "@/services/cforge-api";
 import type { JudgeResult } from "@/domain/types";
 import { topicHead } from "@/lib/topic-loader";
-import { highlightC } from "@/components/common/CodeBlock";
+import { StudioEditor } from "@/components/studio/StudioEditor";
 import { CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/studio/$exerciseId")({
@@ -28,14 +29,16 @@ function Workspace() {
   const [stdin, setStdin] = useState(ex.samples[0]?.input ?? "");
   const [busy, setBusy] = useState<"run" | "submit" | null>(null);
   const [res, setRes] = useState<JudgeResult | null>(null);
-  const gutter = useRef<HTMLDivElement>(null);
-  const hl = useRef<HTMLPreElement>(null);
-  const lines = code.split("\n").length;
-
   async function go(mode: "run" | "submit") {
     setBusy(mode);
-    setRes(mode === "run" ? await services.judge.run(ex.id, code, stdin) : await services.judge.submit(ex.id, code));
-    setBusy(null);
+    try {
+      setRes(mode === "run" ? await services.judge.run(ex.id, code, stdin) : await services.judge.submit(ex.id, code));
+    } catch (error) {
+      rethrowIfRedirect(error);
+      setRes({ mode, verdict: "compile-error", compilerOutput: error instanceof Error ? error.message : "The judge request failed.", stdout: "", isSimulated: false });
+    } finally {
+      setBusy(null);
+    }
   }
 
   return (
@@ -47,6 +50,7 @@ function Workspace() {
         </div>
         <span className="mt-4 inline-block rounded bg-secondary px-2 py-0.5 font-mono text-[11px]">{ex.difficulty}</span>
         <h1 className="mt-2 font-display text-3xl">{ex.title}</h1>
+        {ex.topicId ? <p className="mt-2 text-sm"><Link to="/learn/topics/$topicId" params={{ topicId: ex.topicId }} className="text-copper hover:underline">Open the related topic</Link></p> : null}
         <p className="mt-3 leading-7">{ex.statement}</p>
         <h2 className="mt-6 text-sm font-semibold">Input</h2><p className="text-sm text-muted-foreground">{ex.inputFormat}</p>
         <h2 className="mt-4 text-sm font-semibold">Output</h2><p className="text-sm text-muted-foreground">{ex.outputFormat}</p>
@@ -70,14 +74,8 @@ function Workspace() {
         </div>
         <div className="relative flex min-h-72 flex-1 overflow-hidden bg-code">
           {busy && <div className="cf-shine pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 bg-ember/60" aria-hidden />}
-          <div ref={gutter} aria-hidden className="select-none overflow-hidden py-3 pl-3 pr-2 text-right font-mono text-[13px] leading-6 text-code-comment/60">
-            {Array.from({ length: lines }, (_, i) => <div key={i}>{i + 1}</div>)}
-          </div>
           <div className="relative flex-1">
-          <pre ref={hl} aria-hidden className="pointer-events-none absolute inset-0 m-0 overflow-hidden whitespace-pre py-3 pr-4 font-mono text-[13px] leading-6 text-code-foreground"><code>{highlightC(code)}{"\n"}</code></pre>
-          <textarea aria-label="C code editor" data-testid="studio-editor" spellCheck={false} value={code} onChange={(e) => setCode(e.target.value)} onScroll={(e) => { if (gutter.current) gutter.current.scrollTop = e.currentTarget.scrollTop; if (hl.current) { hl.current.scrollTop = e.currentTarget.scrollTop; hl.current.scrollLeft = e.currentTarget.scrollLeft; } }}
-            onKeyDown={(e) => { if (e.key === "Tab") { e.preventDefault(); const t = e.currentTarget, s = t.selectionStart; setCode(code.slice(0, s) + "    " + code.slice(t.selectionEnd)); requestAnimationFrame(() => t.setSelectionRange(s + 4, s + 4)); } }}
-            className="absolute inset-0 h-full w-full resize-none whitespace-pre bg-transparent py-3 pr-4 font-mono text-[13px] leading-6 text-transparent caret-[var(--ember)] outline-none selection:bg-ember/30" wrap="off" />
+            <StudioEditor value={code} onChange={setCode} />
           </div>
         </div>
         <div className="grid border-t border-border md:grid-cols-2">
@@ -86,17 +84,18 @@ function Workspace() {
             <Textarea id="stdin" value={stdin} onChange={(e) => setStdin(e.target.value)} className="mt-1 h-28 resize-none font-mono text-xs" />
           </div>
           <div className="max-h-56 overflow-y-auto p-3" aria-live="polite">
-            <div className="flex items-center gap-2"><span className="text-xs font-semibold text-muted-foreground">Output</span>{res && <DemoBadge>Simulated result</DemoBadge>}</div>
+            <div className="flex items-center gap-2"><span className="text-xs font-semibold text-muted-foreground">Output</span>{res?.isSimulated && <DemoBadge>Simulated result</DemoBadge>}</div>
             {!res ? <p className="mt-2 text-sm text-muted-foreground">Run your code to see compiler feedback here.</p> : (
               <div className="mt-2 space-y-2 font-mono text-xs">
-                <div className={`cf-pop flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold ${res.verdict === "accepted" ? "bg-success/15 text-success" : res.verdict === "compile-error" ? "bg-warning/15 text-warning" : "bg-destructive/15 text-destructive"}`} data-testid="studio-verdict">
-                  {res.verdict === "accepted" ? <CheckCircle2 className="size-4" /> : res.verdict === "compile-error" ? <AlertTriangle className="size-4" /> : <XCircle className="size-4" />}{res.verdict.replace("-", " ").toUpperCase()}
+                <div className={`cf-pop flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold ${res.verdict === "accepted" ? "bg-success/15 text-success" : res.verdict === "unavailable" || res.verdict === "compile-error" ? "bg-warning/15 text-warning" : "bg-destructive/15 text-destructive"}`} data-testid="studio-verdict">
+                  {res.verdict === "accepted" ? <CheckCircle2 className="size-4" /> : res.verdict === "unavailable" || res.verdict === "compile-error" ? <AlertTriangle className="size-4" /> : <XCircle className="size-4" />}{res.verdict === "unavailable" ? "JUDGE UNAVAILABLE" : res.verdict.replace("-", " ").toUpperCase()}
                   {res.tests && <span className="ml-auto font-mono text-xs font-normal">{res.tests.filter((t) => t.passed).length}/{res.tests.length} tests</span>}
                 </div>
                 <pre className="whitespace-pre-wrap text-muted-foreground">{res.compilerOutput}</pre>
                 {res.stdout && <pre className="whitespace-pre-wrap">{res.stdout}</pre>}
                 {res.tests && <ul className="grid grid-cols-2 gap-1.5">{res.tests.map((t, k) => <li key={t.name} style={{ animationDelay: `${k * 120}ms` }} className={`cf-pop flex items-center gap-1.5 rounded-lg px-2 py-1.5 ${t.passed ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>{t.passed ? <CheckCircle2 className="size-3.5" /> : <XCircle className="size-3.5" />} {t.name}</li>)}</ul>}
-                <p className="text-muted-foreground">Not real execution — the secure CForge judge will be connected later.</p>
+                {res.verdict === "unavailable" ? <p className="text-muted-foreground">No compilation or test result was produced.</p> : null}
+                {res.isSimulated && res.verdict !== "unavailable" && <p className="text-muted-foreground">Not real execution — the secure CForge judge will be connected later.</p>}
               </div>
             )}
           </div>

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { MailPlus, Ban } from "lucide-react";
-import { services } from "@/services";
+import { IS_DEMO, services } from "@/services";
 import { PageHeader, Panel, DemoBadge, EmptyState } from "@/components/common/bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,9 +31,10 @@ function Chip({ status }: { status: InvitationStatus }) {
 
 function FacultyInvitations() {
   const qc = useQueryClient();
-  const { data: invitations = [], isLoading } = useQuery({
+  const { data: invitations = [], isLoading, isError, error } = useQuery({
     queryKey: ["faculty-invitations"],
     queryFn: () => services.invitations.list(),
+    retry: false,
   });
   const { data: roster = [] } = useQuery({
     queryKey: ["faculty-roster"],
@@ -43,6 +44,7 @@ function FacultyInvitations() {
   const [filter, setFilter] = useState<"all" | InvitationStatus>("all");
   const [createOpen, setCreateOpen] = useState(false);
   const [newRoll, setNewRoll] = useState("");
+  const [createdJoinPath, setCreatedJoinPath] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const sorted: Invitation[] = [...invitations].sort((a, b) => a.rollNumber.localeCompare(b.rollNumber));
@@ -58,8 +60,9 @@ function FacultyInvitations() {
       return;
     }
     try {
-      await services.invitations.create(roll);
-      toast.success(`Invitation created for ${roll} (demo-only).`);
+      const created = await services.invitations.create(roll);
+      setCreatedJoinPath(created.oneTimeJoinPath ?? null);
+      toast.success(IS_DEMO ? `Invitation created for ${roll} (demo-only).` : `Invitation created for ${roll}. Copy the one-time join link now; it is not stored in this list.`);
       setCreateOpen(false);
       setNewRoll("");
       qc.invalidateQueries({ queryKey: ["faculty-invitations"] });
@@ -71,11 +74,15 @@ function FacultyInvitations() {
   }
 
   async function revoke(id: string) {
-    await services.invitations.revoke(id);
-    toast.success("Invitation revoked (demo-only).");
-    qc.invalidateQueries({ queryKey: ["faculty-invitations"] });
-    qc.invalidateQueries({ queryKey: ["faculty-roster"] });
-    qc.invalidateQueries({ queryKey: ["faculty-summary"] });
+    try {
+      await services.invitations.revoke(id);
+      toast.success(IS_DEMO ? "Invitation revoked (demo-only)." : "Invitation revoked.");
+      qc.invalidateQueries({ queryKey: ["faculty-invitations"] });
+      qc.invalidateQueries({ queryKey: ["faculty-roster"] });
+      qc.invalidateQueries({ queryKey: ["faculty-summary"] });
+    } catch (cause) {
+      toast.error(cause instanceof Error ? cause.message : "The invitation was not revoked.");
+    }
   }
 
   return (
@@ -83,10 +90,10 @@ function FacultyInvitations() {
       <PageHeader
         eyebrow="Faculty · invitations"
         title={<>Invitation <em className="text-copper">management</em></>}
-        lede="Create new invitations bound to a roll number, review their status, and revoke outstanding ones. Passwords and stored invitation tokens are never shown here."
+        lede="Create invitations bound to a roll number, review status, and revoke outstanding ones. The join link is shown once at create time. Stored token hashes and passwords are never listed."
         actions={
           <>
-            <DemoBadge>Demo mode</DemoBadge>
+            {IS_DEMO && <DemoBadge>Demo mode</DemoBadge>}
             <Dialog open={createOpen} onOpenChange={setCreateOpen}>
               <DialogTrigger asChild>
                 <Button data-testid="invitation-create-btn"><MailPlus className="size-4" /> New invitation</Button>
@@ -95,7 +102,7 @@ function FacultyInvitations() {
                 <DialogHeader>
                   <DialogTitle>Create invitation</DialogTitle>
                   <DialogDescription>
-                    Pick an un-invited roll number from the roster. The invitation lasts 14 days in demo mode. Students use the acceptance page to set their own password.
+                    {IS_DEMO ? "Pick an un-invited roll number from the roster. The invitation lasts 14 days in demo mode. Students use the acceptance page to set their own password." : "The server creates the invitation. The one-time join link appears once after create so you can send it to the student."}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
@@ -116,6 +123,30 @@ function FacultyInvitations() {
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
                   <Button onClick={create} data-testid="invitation-create-submit" disabled={!newRoll}>Create</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Dialog open={!!createdJoinPath} onOpenChange={(open) => { if (!open) setCreatedJoinPath(null); }}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>One-time join link</DialogTitle>
+                  <DialogDescription>Copy this link now. It is not stored on the invitation list. The student uses it to set their own password.</DialogDescription>
+                </DialogHeader>
+                {createdJoinPath ? (
+                  <Input readOnly value={`${window.location.origin}${createdJoinPath}`} className="font-mono text-xs" data-testid="invitation-join-link" />
+                ) : null}
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    onClick={async () => {
+                      if (!createdJoinPath) return;
+                      await navigator.clipboard.writeText(`${window.location.origin}${createdJoinPath}`);
+                      toast.success("Join link copied.");
+                    }}
+                  >
+                    Copy link
+                  </Button>
+                  <Button variant="outline" onClick={() => setCreatedJoinPath(null)}>Done</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -166,6 +197,8 @@ function FacultyInvitations() {
         <div className="mt-5 overflow-x-auto">
           {isLoading ? (
             <p className="animate-pulse text-sm text-muted-foreground">Loading invitations…</p>
+          ) : isError ? (
+            <EmptyState title="Invitations unavailable" body={error instanceof Error ? error.message : "The faculty invitations API did not return a list. No invitation was invented."} />
           ) : filtered.length === 0 ? (
             <EmptyState title="No invitations" body="Create a new invitation for a roster entry to see it listed here." />
           ) : (
@@ -184,7 +217,7 @@ function FacultyInvitations() {
                   <tr key={inv.id} className="border-b border-border/60" data-testid={`invitation-row-${inv.rollNumber}`}>
                     <td className="py-2 pr-3 font-mono text-xs">{inv.rollNumber}</td>
                     <td className="py-2 pr-3"><Chip status={inv.status} /></td>
-                    <td className="py-2 pr-3 font-mono text-xs">{inv.createdAt}</td>
+                    <td className="py-2 pr-3 font-mono text-xs">{inv.createdAt || "—"}</td>
                     <td className="py-2 pr-3 font-mono text-xs">{inv.expiresAt}</td>
                     <td className="py-2 pr-3">
                       {inv.status === "pending" ? (

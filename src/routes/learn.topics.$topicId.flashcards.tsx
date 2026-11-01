@@ -12,11 +12,11 @@ export const Route = createFileRoute("/learn/topics/$topicId/flashcards")({
 });
 
 function Page() {
-  const { topic, unit, cards } = Route.useLoaderData();
+  const { topic, unit, cards, teaching } = Route.useLoaderData();
   return (
-    <TopicShell topic={topic} unit={unit} title={`Flashcards — ${topic.title}`}>
-      <div className="mb-6"><SourceNotice what="This deck" /></div>
-      <Flashcards key={topic.id} cards={cards} />
+    <TopicShell topic={topic} unit={unit} title={`Flashcards — ${topic.title}`} teaching={teaching}>
+      <div className="mb-6"><SourceNotice what="This deck" source={topic.source} /></div>
+      <Flashcards key={topic.id} cards={cards} topicId={topic.id} source={topic.source} />
     </TopicShell>
   );
 }

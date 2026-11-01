@@ -5,8 +5,34 @@ import { Button } from "@/components/ui/button";
 import { HeroScene } from "@/components/art/HeroScene";
 import { CountUp, Reveal } from "@/components/art/motion";
 import { Approach, AssessmentShowcase, CohortFlow, CurriculumShowcase, MindMapSection, ProgressShowcase, StudioShowcase, VisualiserBento } from "@/components/home/Sections";
+import { ProductHomeActions, ProductNotice } from "@/components/common/ProductNotice";
+import { apiBase } from "@/services/api-origin";
+import { IS_DEMO, services } from "@/services";
+import { TOOL_IDS } from "@/data/tools";
+import type { Topic, Unit } from "@/domain/types";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    if (IS_DEMO) {
+      const [demoUnits, demoTopics] = await Promise.all([services.curriculum.units(), services.curriculum.topics()]);
+      return {
+        catalog: {
+          units: demoUnits,
+          topics: demoTopics,
+          packageCount: demoTopics.filter((topic) => topic.unitId !== "supplementary").length,
+          visualiserCount: TOOL_IDS.length,
+        },
+      };
+    }
+    const response = await fetch(`${apiBase()}/api/v1/bridge/catalog`);
+    if (!response.ok) throw new Error(`The CForge catalog is unavailable (${response.status}).`);
+    const catalog = (await response.json()) as { units: Unit[]; topics: Topic[]; packageCount: number; visualiserCount: number };
+    if (!Array.isArray(catalog.units) || !Array.isArray(catalog.topics)) {
+      throw new Error("The CForge catalog did not include units and topics.");
+    }
+    return { catalog };
+  },
+  errorComponent: CatalogUnavailable,
   head: () => ({
     meta: [
       { title: "CForge — Learn the logic. Forge the skill." },
@@ -20,7 +46,27 @@ export const Route = createFileRoute("/")({
   component: Welcome,
 });
 
+function CatalogUnavailable() {
+  return (
+    <PublicLayout>
+      <ProductNotice
+        eyebrow="CForge catalog"
+        title="The official catalog is unavailable"
+        body="The home page reads units and teaching counts from the original API. Those counts were not invented."
+      >
+        <ProductHomeActions />
+      </ProductNotice>
+    </PublicLayout>
+  );
+}
+
 function Welcome() {
+  const { catalog } = Route.useLoaderData();
+  const counts = [
+    [catalog.units.length, "official units"],
+    [catalog.packageCount, "teaching packages"],
+    [catalog.visualiserCount, "visualisers"],
+  ] as const;
   return (
     <PublicLayout>
       <section className="relative">
@@ -38,7 +84,7 @@ function Welcome() {
               <Button asChild variant="quiet" size="lg" className="press rounded-full glass-panel"><a href="#approach" data-testid="hero-explore">Explore the Learning Experience</a></Button>
             </div>
             <dl className="cf-rise mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-foreground/10 pt-6" style={{ animationDelay: "480ms" }}>
-              {([[5, "official units"], [31, "teaching packages"], [8, "visualisers"]] as const).map(([n, l]) => (
+              {counts.map(([n, l]) => (
                 <div key={l}><dt className="font-display text-4xl text-copper"><CountUp to={n} /></dt><dd className="text-xs text-muted-foreground">{l}</dd></div>
               ))}
             </dl>
@@ -48,13 +94,13 @@ function Welcome() {
       </section>
 
       <Approach />
-      <CurriculumShowcase />
-      <MindMapSection />
+      <CurriculumShowcase catalog={catalog} />
+      <MindMapSection catalog={catalog} />
       <VisualiserBento />
       <StudioShowcase />
       <AssessmentShowcase />
-      <ProgressShowcase />
-      <CohortFlow />
+      <ProgressShowcase catalog={catalog} />
+      <CohortFlow catalog={catalog} />
 
       <section className="px-4 pb-24 md:px-6">
         <Reveal className="surface-ink relative mx-auto max-w-6xl overflow-hidden rounded-[2rem]">
