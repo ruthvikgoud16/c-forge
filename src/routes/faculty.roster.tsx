@@ -13,7 +13,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import type { AccountStatus, RosterEntry } from "@/domain/types";
 
-export const Route = createFileRoute("/faculty/roster")({ component: FacultyRoster });
+export const Route = createFileRoute("/faculty/roster")({
+  loader: () => Promise.all([services.faculty.roster(), services.faculty.summary()]),
+  component: FacultyRoster,
+});
 
 const STATUS_META: Record<AccountStatus, { label: string; cls: string }> = {
   active: { label: "Active", cls: "bg-success/15 text-success" },
@@ -28,16 +31,19 @@ function StatusChip({ status }: { status: AccountStatus }) {
 
 function FacultyRoster() {
   const qc = useQueryClient();
+  const [initialRoster, initialSummary] = Route.useLoaderData();
   const { data: roster = [], isLoading, isError, error } = useQuery({
     queryKey: ["faculty-roster"],
     queryFn: () => services.faculty.roster(),
-    enabled: typeof window !== "undefined",
+    initialData: initialRoster,
+    refetchOnMount: "always",
     retry: false,
   });
   const { data: summary } = useQuery({
     queryKey: ["faculty-summary"],
     queryFn: () => services.faculty.summary(),
-    enabled: typeof window !== "undefined",
+    initialData: initialSummary,
+    refetchOnMount: "always",
     retry: false,
   });
 

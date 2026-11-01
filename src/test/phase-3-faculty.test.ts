@@ -27,6 +27,10 @@ describe("faculty overview mapping", () => {
     expect(summary.unitProgress[0]?.demonstrated).toBe(2);
     expect(summary.engagement.map((row) => row.value)).toEqual([8, 21]);
   });
+
+  it("does not turn a missing overview payload into zero counts", () => {
+    expect(() => mapFacultyOverview({})).toThrow(/did not return cohort counts/);
+  });
 });
 
 describe("faculty invitations", () => {

@@ -8,7 +8,10 @@ import { CountUp } from "@/components/art/motion";
 import { unitGradient } from "@/components/art/UnitArt";
 import type { Unit } from "@/domain/types";
 
-export const Route = createFileRoute("/faculty/")({ component: FacultyDashboard });
+export const Route = createFileRoute("/faculty/")({
+  loader: () => services.faculty.summary(),
+  component: FacultyDashboard,
+});
 
 function Stat({ label, value, hint, testId }: { label: string; value: string | number; hint?: string; testId: string }) {
   return (
@@ -31,10 +34,12 @@ function Bar({ value, max, id }: { value: number; max: number; id: string }) {
 }
 
 function FacultyDashboard() {
+  const initial = Route.useLoaderData();
   const { data: summary, isLoading, isError, error } = useQuery({
     queryKey: ["faculty-summary"],
     queryFn: () => services.faculty.summary(),
-    enabled: typeof window !== "undefined",
+    initialData: initial,
+    refetchOnMount: "always",
     retry: false,
   });
 

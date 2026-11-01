@@ -13,7 +13,10 @@ import { toast } from "sonner";
 import type { Invitation, InvitationStatus } from "@/domain/types";
 import { Donut } from "@/components/art/Ring";
 
-export const Route = createFileRoute("/faculty/invitations")({ component: FacultyInvitations });
+export const Route = createFileRoute("/faculty/invitations")({
+  loader: () => Promise.all([services.invitations.list(), services.faculty.roster()]),
+  component: FacultyInvitations,
+});
 
 const STATUS_META: Record<InvitationStatus, { label: string; cls: string }> = {
   pending: { label: "Pending", cls: "bg-info/15 text-info" },
@@ -31,16 +34,19 @@ function Chip({ status }: { status: InvitationStatus }) {
 
 function FacultyInvitations() {
   const qc = useQueryClient();
+  const [initialInvitations, initialRoster] = Route.useLoaderData();
   const { data: invitations = [], isLoading, isError, error } = useQuery({
     queryKey: ["faculty-invitations"],
     queryFn: () => services.invitations.list(),
-    enabled: typeof window !== "undefined",
+    initialData: initialInvitations,
+    refetchOnMount: "always",
     retry: false,
   });
   const { data: roster = [] } = useQuery({
     queryKey: ["faculty-roster"],
     queryFn: () => services.faculty.roster(),
-    enabled: typeof window !== "undefined",
+    initialData: initialRoster,
+    refetchOnMount: "always",
   });
 
   const [filter, setFilter] = useState<"all" | InvitationStatus>("all");
