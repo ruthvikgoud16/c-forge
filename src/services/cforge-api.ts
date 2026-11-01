@@ -258,6 +258,11 @@ export const cforgeServices: CForgeServices = {
           if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(FACULTY_TOKEN_KEY);
           return { ok: false, error: "That faculty token was not accepted." };
         }
+        await fetch(`${apiBase()}/api/v1/faculty/session`, {
+          method: "POST",
+          headers: { authorization: `Bearer ${token}` },
+          credentials: "include",
+        }).catch(() => null);
         memorySession = { role: "faculty", displayName: "Faculty", isDemo: false };
         return { ok: true, session: memorySession };
       }
@@ -278,6 +283,7 @@ export const cforgeServices: CForgeServices = {
       memorySession = null;
       clearGraph();
       if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(FACULTY_TOKEN_KEY);
+      await fetch(`${apiBase()}/api/v1/faculty/session`, { method: "DELETE", credentials: "include" }).catch(() => null);
       await request("/api/v1/auth/logout", { method: "POST" }).catch((error: unknown) => {
         if (isRedirect(error)) return;
         throw error;
