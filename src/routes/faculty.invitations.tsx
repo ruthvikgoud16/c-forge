@@ -14,7 +14,7 @@ import type { Invitation, InvitationStatus } from "@/domain/types";
 import { Donut } from "@/components/art/Ring";
 
 export const Route = createFileRoute("/faculty/invitations")({
-  loader: () => Promise.all([services.invitations.list(), services.faculty.roster()]),
+  ssr: false,
   component: FacultyInvitations,
 });
 
@@ -34,19 +34,15 @@ function Chip({ status }: { status: InvitationStatus }) {
 
 function FacultyInvitations() {
   const qc = useQueryClient();
-  const [initialInvitations, initialRoster] = Route.useLoaderData();
   const { data: invitations = [], isLoading, isError, error } = useQuery({
     queryKey: ["faculty-invitations"],
     queryFn: () => services.invitations.list(),
-    initialData: initialInvitations,
-    refetchOnMount: "always",
-    retry: false,
+    retry: 1,
   });
   const { data: roster = [] } = useQuery({
     queryKey: ["faculty-roster"],
     queryFn: () => services.faculty.roster(),
-    initialData: initialRoster,
-    refetchOnMount: "always",
+    retry: 1,
   });
 
   const [filter, setFilter] = useState<"all" | InvitationStatus>("all");

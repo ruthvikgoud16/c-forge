@@ -31,6 +31,10 @@ describe("faculty overview mapping", () => {
   it("does not turn a missing overview payload into zero counts", () => {
     expect(() => mapFacultyOverview({})).toThrow(/did not return cohort counts/);
   });
+
+  it("does not map an unauthorized body as zero counts", () => {
+    expect(() => mapFacultyOverview({ error: "unauthorized" })).toThrow(/did not return cohort counts/);
+  });
 });
 
 describe("faculty invitations", () => {
@@ -72,5 +76,9 @@ describe("faculty roster mapping", () => {
     expect(roster[1]?.status).toBe("invited");
     expect(roster[1]?.name).toBe("26EG104G02");
     expect(rosterStatus("no_account", false)).toBe("not-invited");
+  });
+
+  it("does not treat a missing roster payload as an empty cohort", () => {
+    expect(() => mapFacultyRoster({ error: "unauthorized" }, [])).toThrow(/did not return students/);
   });
 });

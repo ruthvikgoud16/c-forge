@@ -31,7 +31,7 @@ import type {
   UnitId,
 } from "@/domain/types";
 import type { CForgeServices } from "./contracts";
-import { apiBase } from "./api-origin";
+import { apiBase, facultyApiBase } from "./api-origin";
 import { mapDashboard, mapLearningPath, mapRecommendation } from "@/lib/adaptive";
 import { findFoundationTopic, mapFoundationLibrary } from "@/lib/foundation";
 import {
@@ -134,21 +134,34 @@ function errorText(status: number, body: unknown) {
   return `Request failed (${status}).`;
 }
 
+async function facultyFetch(path: string, init: RequestInit) {
+  const origin = facultyApiBase();
+  try {
+    return await fetch(`${origin}${path}`, { ...init, credentials: origin === "" ? "include" : "omit" });
+  } catch (error) {
+    if (origin === "") throw error;
+    return fetch(path, { ...init, credentials: "include" });
+  }
+}
+
 async function request(path: string, init: RequestInit = {}) {
   const headers = new Headers(init.headers);
   if (init.body && !headers.has("content-type")) headers.set("content-type", "application/json");
   const cookie = await readCookie();
   if (cookie) headers.set("cookie", cookie);
-  if (path.startsWith("/api/v1/faculty")) {
+  const faculty = path.startsWith("/api/v1/faculty");
+  if (faculty) {
     const token = facultyToken();
     if (token) headers.set("authorization", `Bearer ${token}`);
   }
-  const response = await fetch(`${apiBase()}${path}`, { ...init, headers, credentials: "include" });
+  const response = faculty
+    ? await facultyFetch(path, { ...init, headers })
+    : await fetch(`${apiBase()}${path}`, { ...init, headers, credentials: "include" });
   if (response.status === 401 && !path.startsWith("/api/v1/auth/")) {
-    if (path.startsWith("/api/v1/faculty") && typeof sessionStorage !== "undefined") {
+    if (faculty && typeof sessionStorage !== "undefined") {
       sessionStorage.removeItem(FACULTY_TOKEN_KEY);
     }
-    throw redirect({ to: path.startsWith("/api/v1/faculty") ? "/faculty-login" : "/login" });
+    throw redirect({ to: faculty ? "/faculty-login" : "/login" });
   }
   return response;
 }
@@ -251,11 +264,12 @@ export const cforgeServices: CForgeServices = {
         const token = input.password.trim();
         if (!token) return { ok: false, error: "Faculty access token is required." };
         if (typeof sessionStorage !== "undefined") sessionStorage.setItem(FACULTY_TOKEN_KEY, token);
-        const probe = await fetch(`${apiBase()}/api/v1/faculty/overview`, {
+        const probe = await facultyFetch("/api/v1/faculty/overview", {
           headers: { authorization: `Bearer ${token}` },
-          credentials: "include",
         });
-        if (!probe.ok) {
+        const probeBody = await probe.json().catch(() => null);
+        const approved = probeBody && typeof probeBody === "object" ? (probeBody as { approvedRoster?: unknown }).approvedRoster : null;
+        if (!probe.ok || typeof approved !== "number") {
           if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(FACULTY_TOKEN_KEY);
           return { ok: false, error: "That faculty token was not accepted." };
         }

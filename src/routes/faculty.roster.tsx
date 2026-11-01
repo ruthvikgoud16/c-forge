@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import type { AccountStatus, RosterEntry } from "@/domain/types";
 
 export const Route = createFileRoute("/faculty/roster")({
-  loader: () => Promise.all([services.faculty.roster(), services.faculty.summary()]),
+  ssr: false,
   component: FacultyRoster,
 });
 
@@ -31,20 +31,15 @@ function StatusChip({ status }: { status: AccountStatus }) {
 
 function FacultyRoster() {
   const qc = useQueryClient();
-  const [initialRoster, initialSummary] = Route.useLoaderData();
   const { data: roster = [], isLoading, isError, error } = useQuery({
     queryKey: ["faculty-roster"],
     queryFn: () => services.faculty.roster(),
-    initialData: initialRoster,
-    refetchOnMount: "always",
-    retry: false,
+    retry: 1,
   });
   const { data: summary } = useQuery({
     queryKey: ["faculty-summary"],
     queryFn: () => services.faculty.summary(),
-    initialData: initialSummary,
-    refetchOnMount: "always",
-    retry: false,
+    retry: 1,
   });
 
   const [q, setQ] = useState("");

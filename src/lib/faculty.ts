@@ -67,6 +67,9 @@ function asUnitId(id: string): UnitId {
 
 export function mapFacultyOverview(raw: unknown): FacultySummary {
   const body = asRecord(raw);
+  if (field(body, "error")) {
+    throw new Error("The faculty overview API did not return cohort counts.");
+  }
   if (!("approvedRoster" in body) && !("students" in body) && !("cohortCapacity" in body)) {
     throw new Error("The faculty overview API did not return cohort counts.");
   }
@@ -127,7 +130,9 @@ export function mapFacultyRoster(raw: unknown, invitations: Invitation[]): Roste
   const body = asRecord(raw);
   const students = field(body, "students") ?? field(body, "roster");
   const pending = new Set(invitations.filter((row) => row.status === "pending").map((row) => row.rollNumber));
-  if (!Array.isArray(students)) return [];
+  if (!Array.isArray(students)) {
+    throw new Error("The faculty roster API did not return students.");
+  }
   return students.map((student) => {
     const item = asRecord(student);
     const rollNumber = text(field(item, "rollNumber"));

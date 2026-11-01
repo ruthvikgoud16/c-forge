@@ -9,7 +9,7 @@ import { unitGradient } from "@/components/art/UnitArt";
 import type { Unit } from "@/domain/types";
 
 export const Route = createFileRoute("/faculty/")({
-  loader: () => services.faculty.summary(),
+  ssr: false,
   component: FacultyDashboard,
 });
 
@@ -34,13 +34,10 @@ function Bar({ value, max, id }: { value: number; max: number; id: string }) {
 }
 
 function FacultyDashboard() {
-  const initial = Route.useLoaderData();
   const { data: summary, isLoading, isError, error } = useQuery({
     queryKey: ["faculty-summary"],
     queryFn: () => services.faculty.summary(),
-    initialData: initial,
-    refetchOnMount: "always",
-    retry: false,
+    retry: 1,
   });
 
   if (isLoading) {

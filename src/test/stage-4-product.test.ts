@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { logoutDest, signedInDest } from "@/lib/session-dest";
 import { IS_DEMO } from "@/services";
+import { facultyBrowserOrigin } from "@/services/api-origin";
 
 describe("session destinations", () => {
   it("sends faculty logout to faculty login and students home", () => {
@@ -25,5 +26,10 @@ describe("production services", () => {
 describe("api origin", () => {
   it("keeps browser calls same-origin and does not read a VITE API origin", () => {
     expect(Object.keys(import.meta.env).some((key) => key.startsWith("VITE_CFORGE_API"))).toBe(false);
+  });
+
+  it("sends production faculty reads to the public Render API", () => {
+    expect(facultyBrowserOrigin("cforge-iota.vercel.app")).toBe("https://cforge-api.onrender.com");
+    expect(facultyBrowserOrigin("localhost")).toBe("");
   });
 });
