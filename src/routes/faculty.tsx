@@ -8,7 +8,6 @@ import { logoutDest } from "@/lib/session-dest";
 import { Aurora } from "@/components/art/motion";
 
 export const Route = createFileRoute("/faculty")({
-  ssr: false,
   head: () => ({
     meta: [
       { title: "Faculty Portal — CForge" },
@@ -35,13 +34,25 @@ function FacultyLayout() {
   const [name, setName] = useState(IS_DEMO ? "Demo Faculty" : "Faculty");
   const [ready, setReady] = useState(false);
   useEffect(() => {
+    let cancelled = false;
     const s = services.auth.currentSession();
-    if (s?.role === "faculty") {
-      setName(s.displayName);
-      setReady(true);
-    } else if (s?.role === "student") {
+    if (s?.role === "student") {
       nav({ to: "/learn" });
-    } else nav({ to: "/faculty-login" });
+      return;
+    }
+    void services.faculty.summary()
+      .then((summary) => {
+        if (cancelled) return;
+        setName(s?.displayName || "Faculty");
+        setReady(true);
+        return summary;
+      })
+      .catch(() => {
+        if (!cancelled) nav({ to: "/faculty-login" });
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [nav]);
   if (!ready) {
     return (
