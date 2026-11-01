@@ -1,0 +1,160 @@
+{
+  "id": "u1-t1-computers-and-binary",
+  "topicId": "u1-t1",
+  "unitId": "unit-1",
+  "title": "The computer, its parts, and binary",
+  "classification": "OFFICIAL",
+  "mode": "learning",
+  "sourceLabel": "Introduction: Block diagram of a computer and its components, Binary System.",
+  "prerequisites": [
+    {
+      "id": "f-basic-computer",
+      "label": "Foundation: Basic computer knowledge",
+      "href": "/learn/foundation#f-basic-computer"
+    }
+  ],
+  "completionCriteria": [
+    "Draw the block diagram and name CU and ALU.",
+    "Convert a small decimal number to binary by place values.",
+    "Opening this lesson is not mastery."
+  ],
+  "objectives": [
+    "Name the main blocks of a simple computer diagram and what each one does.",
+    "Explain, in simple English, why a computer uses binary (0 and 1).",
+    "Convert a very small whole number between decimal and binary by hand.",
+    "Trace a tiny 'fetch–decode–execute' story without writing C yet."
+  ],
+  "notes": {
+    "introduction": "This is the first official Unit 1 topic. We start before C, because a program is only useful if you know who reads it: the machine.",
+    "beginner": "A computer is a machine that follows exact instructions. Those instructions, and the data they use, are stored as patterns of two signals: off and on. People write 0 and 1 for those signals. That pair is the binary system.",
+    "formal": "A digital computer is an automatic electronic machine that accepts data (input), stores it, processes it under the control of a stored program, and produces information (output). The binary number system is the base-2 positional system whose digits are 0 and 1.",
+    "terms": [
+      { "term": "Input unit", "meaning": "The part that brings data in (keyboard, mouse, files)." },
+      { "term": "Output unit", "meaning": "The part that sends results out (screen, printer, files)." },
+      { "term": "Memory / storage", "meaning": "The part that holds programs and data. Main memory is fast and usually temporary while the machine is on. Secondary storage (disk) keeps files when the power is off." },
+      { "term": "CPU", "meaning": "Central Processing Unit — the part that carries out instructions. It is often drawn as Control Unit + ALU." },
+      { "term": "ALU", "meaning": "Arithmetic and Logic Unit — does arithmetic and comparisons." },
+      { "term": "Control unit", "meaning": "Chooses the next instruction and tells other parts what to do." },
+      { "term": "Bit", "meaning": "One binary digit: 0 or 1." },
+      { "term": "Byte", "meaning": "A group of 8 bits. This lesson only needs the idea, not file sizes." }
+    ],
+    "revision": [
+      "Block diagram: input → memory ↔ CPU (CU + ALU) → output.",
+      "Binary uses two symbols because hardware can reliably hold two states.",
+      "Place values in binary go 1, 2, 4, 8, … from the right."
+    ],
+    "examAnswer": "A computer has input, output, memory, and a CPU (control unit and ALU). It uses the binary system because each circuit can represent two stable states, written 0 and 1. Data and instructions are stored as binary patterns."
+  },
+  "mindMap": {
+    "title": "Computer basics",
+    "children": [
+      { "title": "Computer components", "topicId": "u1-t1" },
+      { "title": "Binary system", "topicId": "u1-t1" },
+      { "title": "Algorithms", "topicId": "u1-t2" },
+      { "title": "Flowcharts", "topicId": "u1-t2" },
+      { "title": "C language fundamentals", "topicId": "u1-t3" }
+    ]
+  },
+  "body": {
+    "objectives": "After this lesson you should be able to point at a block diagram, say what each box does, and turn a small number such as 13 into binary.",
+    "prerequisiteCheck": "If the words keyboard, memory, and screen are new, open Foundation → Basic computer knowledge first. You do not need any C yet.",
+    "introduction": "Unit 1 begins with the machine, not with a program. If you skip this, later words like 'variable in memory' will sound like magic.",
+    "analogy": "Think of a very strict kitchen. Input is the ingredients coming in. Memory is the counter and the fridge. The CPU is the cook. The ALU is the knife and the scale (it calculates). The control unit is the recipe reader who says 'now chop, now stir'. Output is the plate that leaves the kitchen. The recipe itself is also stored — that is the program.",
+    "explanation": "A common teaching block diagram has four big boxes: input, output, memory, and CPU. The CPU is often split into a control unit and an ALU. Arrows show data moving in and out of memory, and the control unit directing the other parts. Nothing in this picture is optional decoration: every C program you later write is loaded into memory and run by that CPU.\n\nWhy binary? A switch, a voltage level, or a tiny magnet can be built so that it is reliably in one of two states. Designers chose to treat those states as 0 and 1. With enough bits you can represent numbers, letters, and instructions. You do not need to memorise large binary tables today. You need the place-value idea: from the right, each step is worth twice the last (1, 2, 4, 8, 16, …).",
+    "syntax": "There is no C syntax in this lesson. Two words you will meet in every later lesson: bit (one 0 or 1) and memory (where the running program and its data live).",
+    "visual": {
+      "type": "block-diagram",
+      "nodes": [
+        { "id": "in", "label": "Input" },
+        { "id": "mem", "label": "Memory" },
+        { "id": "cu", "label": "Control unit" },
+        { "id": "alu", "label": "ALU" },
+        { "id": "out", "label": "Output" }
+      ],
+      "edges": [
+        { "from": "in", "to": "mem" },
+        { "from": "mem", "to": "out" },
+        { "from": "mem", "to": "cu" },
+        { "from": "cu", "to": "alu" },
+        { "from": "alu", "to": "mem" }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Decimal 13 in binary",
+        "steps": [
+          "13 is odd, so the right-most bit is 1. Remaining 6.",
+          "6 is even, next bit 0. Remaining 3.",
+          "3 is odd, next bit 1. Remaining 1.",
+          "1 is odd, next bit 1. Remaining 0.",
+          "Read the bits we collected from last to first: 1101. Check: 8+4+0+1 = 13."
+        ]
+      },
+      {
+        "title": "Binary 1010 back to decimal",
+        "steps": [
+          "Write place values from the right: 1, 2, 4, 8.",
+          "Bits 1 0 1 0 mean 8 + 0 + 2 + 0.",
+          "The decimal value is 10."
+        ]
+      }
+    ],
+    "execution": "A tiny story the control unit repeats: (1) fetch the next instruction from memory, (2) decode what it means, (3) execute it with the ALU or by moving data, (4) store any result, (5) go to the next instruction. This is called a fetch–decode–execute cycle in many textbooks. We use it as a story, not as a claim about one brand of chip.",
+    "trace": {
+      "prompt": "A program in memory says: take the number 2 from memory, add 3, put 5 back. Which block does the addition?",
+      "answer": "The ALU.",
+      "dimension": "trace"
+    },
+    "predict": {
+      "prompt": "If a byte holds 00001101, what decimal number is that?",
+      "answer": "13",
+      "dimension": "predict"
+    },
+    "mistakes": [
+      "Thinking the CPU stores all files forever — long-term files usually live on secondary storage.",
+      "Thinking binary is only for experts — it is how the machine already works, even when you type decimal numbers in C later.",
+      "Writing place values from the left. Always start from the right-most bit as 1."
+    ],
+    "guided": {
+      "prompt": "List the four big boxes of the teaching block diagram, then name the two parts inside the CPU.",
+      "expected": ["input", "output", "memory", "cpu", "control", "alu"],
+      "dimension": "concept"
+    },
+    "independent": {
+      "prompt": "Convert decimal 11 to binary. Show the place values you used. No C program is required.",
+      "answer": "1011",
+      "dimension": "independent_write"
+    },
+    "check": [
+      {
+        "id": "q1",
+        "kind": "mcq",
+        "dimension": "concept",
+        "prompt": "Which part performs addition?",
+        "choices": ["Input unit", "ALU", "Output unit", "Keyboard"],
+        "answer": 1
+      },
+      {
+        "id": "q2",
+        "kind": "mcq",
+        "dimension": "concept",
+        "prompt": "How many symbols does the binary system use?",
+        "choices": ["10", "8", "2", "16"],
+        "answer": 2
+      },
+      {
+        "id": "q3",
+        "kind": "short",
+        "dimension": "predict",
+        "prompt": "What decimal value is binary 1010?",
+        "answer": "10"
+      }
+    ],
+    "summary": "A computer is input, memory, CPU (control unit + ALU), and output. It stores and processes binary patterns. You can convert small numbers by using place values 1, 2, 4, 8, … from the right.",
+    "revision": [
+      "Draw the block diagram from memory.",
+      "Explain binary to a classmate in four sentences.",
+      "Convert 7 and 16 to binary."
+    ]
+  }
+}

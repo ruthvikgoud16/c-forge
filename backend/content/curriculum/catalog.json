@@ -1,0 +1,517 @@
+{
+  "version": "lesson-plan-screenshots-2a",
+  "status": "extracted",
+  "source": {
+    "type": "teacher_lesson_plan_screenshots",
+    "pdfReceived": false,
+    "pdfPageReferences": "none — screenshot source; page numbers not invented"
+  },
+  "units": [
+    {
+      "id": "unit-1",
+      "slug": "unit-1",
+      "ordinal": 1,
+      "kind": "official",
+      "classification": "OFFICIAL",
+      "sourceLabel": "UNIT 1 — Introduction, C Preliminaries and Operators",
+      "title": "Introduction, C Preliminaries and Operators",
+      "overview": {
+        "teaches": "How a computer is organised, how binary represents information, how algorithms and flowcharts describe steps, and the first pieces of the C language: names, types, input/output, program structure, and operators.",
+        "why": "Later units assume you can already name parts of a machine, write a simple sequence of steps, and read a short C program.",
+        "prerequisites": ["Foundation: basic computer knowledge if the block diagram is unfamiliar."],
+        "outcomes": [
+          "Name the main parts of a computer and what they do.",
+          "Explain why computers use binary.",
+          "Read a simple algorithm and flowchart.",
+          "Recognise C keywords, identifiers, constants, variables, and data types.",
+          "Read formatted input/output and the structure of a C program.",
+          "Evaluate arithmetic, assignment, relational, logical, increment, decrement, bitwise, and ternary operators at a beginner level."
+        ],
+        "connectsTo": "Unit 2 uses operators and type conversion inside decisions and loops."
+      },
+      "topics": [
+        {
+          "id": "u1-t1",
+          "ordinal": 1,
+          "sourceLabel": "Introduction: Block diagram of a computer and its components, Binary System.",
+          "title": "Block diagram of a computer, components, and the binary system",
+          "classification": "OFFICIAL",
+          "lessonId": "u1-t1-computers-and-binary"
+        },
+        {
+          "id": "u1-t2",
+          "ordinal": 2,
+          "sourceLabel": "Algorithms and Flowcharts.",
+          "title": "Algorithms and Flowcharts",
+          "classification": "OFFICIAL",
+          "lessonId": "u1-t2-algorithms-flowcharts"
+        },
+        {
+          "id": "u1-t3",
+          "ordinal": 3,
+          "sourceLabel": "C Preliminaries: Keywords, Identifiers, Constants, and Variables.",
+          "title": "Keywords, Identifiers, Constants, and Variables",
+          "classification": "OFFICIAL",
+          "lessonId": "u1-t3-keywords-identifiers"
+        },
+        {
+          "id": "u1-t4",
+          "ordinal": 4,
+          "sourceLabel": "C Preliminaries: Data Types, Formatted Input/Output Statements.",
+          "title": "Data Types, Formatted Input/Output Statements",
+          "classification": "OFFICIAL",
+          "lessonId": "u1-t4-types-io"
+        },
+        {
+          "id": "u1-t5",
+          "ordinal": 5,
+          "sourceLabel": "C Preliminaries: Structure of a C Program — Examples.",
+          "title": "Structure of a C Program — Examples",
+          "classification": "OFFICIAL",
+          "lessonId": "u1-t5-c-program-structure"
+        },
+        {
+          "id": "u1-t6",
+          "ordinal": 6,
+          "sourceLabel": "Operators: Arithmetic, Assignment, Relational and Logical Operators.",
+          "title": "Arithmetic, Assignment, Relational and Logical Operators",
+          "classification": "OFFICIAL",
+          "lessonId": "u1-t6-basic-operators"
+        },
+        {
+          "id": "u1-t7",
+          "ordinal": 7,
+          "sourceLabel": "Operators: Increment and Decrement, Bitwise, Ternary and Special Operators.",
+          "title": "Increment and Decrement, Bitwise, Ternary and Special Operators",
+          "classification": "OFFICIAL",
+          "lessonId": "u1-t7-more-operators"
+        },
+        {
+          "id": "u1-t8",
+          "ordinal": 8,
+          "sourceLabel": "Experiments / Laboratory for Unit I.",
+          "title": "Experiments / Laboratory for Unit I",
+          "classification": "OFFICIAL"
+        }
+      ]
+    },
+    {
+      "id": "unit-2",
+      "slug": "unit-2",
+      "ordinal": 2,
+      "kind": "official",
+      "classification": "OFFICIAL",
+      "sourceLabel": "UNIT 2 — Conditional / Decision Statements and Control Structures",
+      "title": "Conditional / Decision Statements and Control Structures",
+      "overview": {
+        "teaches": "How C chooses a path and how it repeats work: precedence, type conversion, if/switch, break/continue/goto, and loops.",
+        "why": "Almost every useful program must decide and repeat.",
+        "prerequisites": ["Unit 1 operators and a simple C program structure."],
+        "outcomes": [
+          "Explain precedence and associativity with a small example.",
+          "Write if, if-else, nested if-else, else-if, and switch examples.",
+          "State what break, continue, and goto do, including why goto is usually avoided.",
+          "Trace while, do-while, and for loops."
+        ],
+        "connectsTo": "Unit 3 uses loops to walk through arrays and strings."
+      },
+      "topics": [
+        {
+          "id": "u2-t1",
+          "ordinal": 1,
+          "sourceLabel": "Precedence and Associativity, Type Conversion with Examples.",
+          "title": "Precedence and Associativity, Type Conversion with Examples",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u2-t2",
+          "ordinal": 2,
+          "sourceLabel": "Conditional Statements: if, if-else, nested if-else and Examples.",
+          "title": "if, if-else, nested if-else and Examples",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u2-t3",
+          "ordinal": 3,
+          "sourceLabel": "Conditional Statements: else-if ladder and switch statements with Examples.",
+          "title": "else-if ladder and switch statements with Examples",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u2-t4",
+          "ordinal": 4,
+          "sourceLabel": "Unconditional Statements: break, continue and goto.",
+          "title": "break, continue and goto",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u2-t5",
+          "ordinal": 5,
+          "sourceLabel": "Control Structures: while, do-while.",
+          "title": "while, do-while",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u2-t6",
+          "ordinal": 6,
+          "sourceLabel": "Control Structures: for and its examples.",
+          "title": "for and its examples",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u2-t7",
+          "ordinal": 7,
+          "sourceLabel": "Experiments / Laboratory for Unit II.",
+          "title": "Experiments / Laboratory for Unit II",
+          "classification": "OFFICIAL"
+        }
+      ]
+    },
+    {
+      "id": "unit-3",
+      "slug": "unit-3",
+      "ordinal": 3,
+      "kind": "official",
+      "classification": "OFFICIAL",
+      "sourceLabel": "UNIT 3 — Arrays and Strings",
+      "title": "Arrays and Strings",
+      "overview": {
+        "teaches": "One-dimensional and multi-dimensional arrays, string input/output, and string work with and without library functions.",
+        "why": "Lists of numbers and text are the usual way programs store many values.",
+        "prerequisites": ["Unit 2 loops and Unit 1 data types."],
+        "outcomes": [
+          "Index a one-dimensional array.",
+          "Read a simple two-dimensional example.",
+          "Use string I/O carefully.",
+          "Use strlen, strcmp, strcat, strcpy; treat strrev as non-standard.",
+          "Perform simple string work without library functions."
+        ],
+        "connectsTo": "Unit 4 passes arrays into functions. Unit 5 searches and sorts arrays."
+      },
+      "topics": [
+        {
+          "id": "u3-t1",
+          "ordinal": 1,
+          "sourceLabel": "Arrays: Introduction, One-Dimensional.",
+          "title": "Arrays: Introduction, One-Dimensional",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u3-t2",
+          "ordinal": 2,
+          "sourceLabel": "Multi-Dimensional Array with suitable examples.",
+          "title": "Multi-Dimensional Array with suitable examples",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u3-t3",
+          "ordinal": 3,
+          "sourceLabel": "Strings: Introduction, String I/O, Unformatted I/O.",
+          "title": "Strings: Introduction, String I/O, Unformatted I/O",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u3-t4",
+          "ordinal": 4,
+          "sourceLabel": "String operations with built-in functions: strlen(), strcmp(), strcat(), strcpy(), and strrev().",
+          "title": "String operations with built-in functions",
+          "classification": "OFFICIAL",
+          "accuracyNotes": [
+            "strrev() is not in the ISO C standard library. Label it as a compiler-specific / non-standard extension."
+          ]
+        },
+        {
+          "id": "u3-t5",
+          "ordinal": 5,
+          "sourceLabel": "String operations without built-in functions.",
+          "title": "String operations without built-in functions",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u3-t6",
+          "ordinal": 6,
+          "sourceLabel": "Experiments / Laboratory for Unit III.",
+          "title": "Experiments / Laboratory for Unit III",
+          "classification": "OFFICIAL"
+        }
+      ]
+    },
+    {
+      "id": "unit-4",
+      "slug": "unit-4",
+      "ordinal": 4,
+      "kind": "official",
+      "classification": "OFFICIAL",
+      "sourceLabel": "UNIT 4 — Storage Classes and Functions",
+      "title": "Storage Classes and Functions",
+      "overview": {
+        "teaches": "Storage classes, how functions work, parameter passing, arrays as arguments, and recursion.",
+        "why": "Functions let you name a piece of work and reuse it. Storage classes control lifetime and visibility.",
+        "prerequisites": ["Unit 1–3: variables, arrays, and control flow."],
+        "outcomes": [
+          "Describe auto, static, register, and extern with a small example each.",
+          "Write a function with a return value.",
+          "Explain call by value, and how pointers are used when teaching 'call by reference'.",
+          "Pass an array to a function.",
+          "Trace a small recursive function."
+        ],
+        "connectsTo": "Searching and sorting functions in Unit 5.",
+        "accuracyNotes": [
+          "Standard C passes arguments by value. 'Call by reference' in the college wording is taught as passing an address (pointer) so the called function can change the caller's object."
+        ]
+      },
+      "topics": [
+        {
+          "id": "u4-t1",
+          "ordinal": 1,
+          "sourceLabel": "Storage Classes: auto, static, register and extern with suitable examples.",
+          "title": "Storage Classes: auto, static, register and extern",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u4-t2",
+          "ordinal": 2,
+          "sourceLabel": "Functions: Introduction to Functions, Working with functions, Benefits and Types of Functions, return(), exit().",
+          "title": "Introduction to Functions, return(), exit()",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u4-t3",
+          "ordinal": 3,
+          "sourceLabel": "Parameter Passing Mechanisms: Call by Value and Call by Reference.",
+          "title": "Call by Value and Call by Reference",
+          "classification": "OFFICIAL",
+          "accuracyNotes": [
+            "C has no standard pass-by-reference. Preserve the college phrase and explain pointer-based modification of the caller's object."
+          ]
+        },
+        {
+          "id": "u4-t4",
+          "ordinal": 4,
+          "sourceLabel": "Passing Arrays to Functions.",
+          "title": "Passing Arrays to Functions",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u4-t5",
+          "ordinal": 5,
+          "sourceLabel": "Recursion with suitable illustrative programs.",
+          "title": "Recursion with suitable illustrative programs",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u4-t6",
+          "ordinal": 6,
+          "sourceLabel": "Experiments / Laboratory for Unit IV.",
+          "title": "Experiments / Laboratory for Unit IV",
+          "classification": "OFFICIAL"
+        }
+      ]
+    },
+    {
+      "id": "unit-5",
+      "slug": "unit-5",
+      "ordinal": 5,
+      "kind": "official",
+      "classification": "OFFICIAL",
+      "sourceLabel": "UNIT 5 — Searching and Sorting",
+      "title": "Searching and Sorting",
+      "overview": {
+        "teaches": "Linear and binary search, then bubble, insertion, selection, quick, and merge sort, plus laboratory / competitive practice as listed.",
+        "why": "Finding and ordering values is a core laboratory skill in this syllabus.",
+        "prerequisites": ["Arrays, loops, and functions."],
+        "outcomes": [
+          "Trace linear search and binary search.",
+          "Trace the five listed sorting methods at a beginner level."
+        ],
+        "connectsTo": "Closes the supplied five-unit plan.",
+        "accuracyNotes": [
+          "The source lists competitive programming practice on global platforms as part of Unit V laboratory. No specific platform problems were supplied, so none are invented."
+        ]
+      },
+      "topics": [
+        {
+          "id": "u5-t1",
+          "ordinal": 1,
+          "sourceLabel": "Searching: Linear Search.",
+          "title": "Linear Search",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u5-t2",
+          "ordinal": 2,
+          "sourceLabel": "Searching: Binary Search.",
+          "title": "Binary Search",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u5-t3",
+          "ordinal": 3,
+          "sourceLabel": "Sorting: Bubble Sort.",
+          "title": "Bubble Sort",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u5-t4",
+          "ordinal": 4,
+          "sourceLabel": "Sorting: Insertion Sort.",
+          "title": "Insertion Sort",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u5-t5",
+          "ordinal": 5,
+          "sourceLabel": "Sorting: Selection Sort.",
+          "title": "Selection Sort",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u5-t6",
+          "ordinal": 6,
+          "sourceLabel": "Sorting: Quick Sort.",
+          "title": "Quick Sort",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u5-t7",
+          "ordinal": 7,
+          "sourceLabel": "Sorting: Merge Sort.",
+          "title": "Merge Sort",
+          "classification": "OFFICIAL"
+        },
+        {
+          "id": "u5-t8",
+          "ordinal": 8,
+          "sourceLabel": "Competitive Programming Practice Problems using global coding platforms, Experiments / Laboratory for Unit V.",
+          "title": "Competitive practice and laboratory for Unit V",
+          "classification": "OFFICIAL",
+          "needsHumanVerification": true,
+          "accuracyNotes": [
+            "No named problems or platforms were supplied. Laboratory list is recorded; items are not fabricated."
+          ]
+        }
+      ]
+    }
+  ],
+  "foundation": {
+    "id": "foundation",
+    "slug": "foundation",
+    "kind": "foundation",
+    "classification": "SUPPORTING",
+    "sourceLabel": "UNIT 999: Custom Unit",
+    "title": "Foundation & Remediation Library",
+    "notAnOfficialUnit": true,
+    "sourceNote": "Screenshots showed 37 entries. Only the 17 labels below were readable. The remaining 20 are not invented.",
+    "missingEntryCount": 20,
+    "topics": [
+      {
+        "id": "f-basics-programming",
+        "sourceLabels": ["Basics of Programming."],
+        "title": "Basics of Programming",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-intro-preliminaries",
+        "sourceLabels": ["Introduction and Preliminaries."],
+        "title": "Introduction and Preliminaries",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-overview-pic",
+        "sourceLabels": ["Overview of PIC."],
+        "title": "Overview of PIC",
+        "classification": "LEGACY_UNVERIFIED",
+        "needsHumanVerification": true,
+        "accuracyNotes": ["PIC is unclear in this C-academy context. Do not invent a meaning."]
+      },
+      {
+        "id": "f-basic-computer",
+        "sourceLabels": ["Basic computer knowledge."],
+        "title": "Basic computer knowledge",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-block-diagram",
+        "sourceLabels": ["Block diagram of a PC/computer."],
+        "title": "Block diagram of a PC/computer",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-software-basics",
+        "sourceLabels": ["Computer software basics."],
+        "title": "Computer software basics",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-binary",
+        "sourceLabels": ["Binary number system."],
+        "title": "Binary number system",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-number-conversion",
+        "sourceLabels": ["Number system conversion."],
+        "title": "Number system conversion",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-algo-flow",
+        "sourceLabels": ["Algorithms and flowcharts."],
+        "title": "Algorithms and flowcharts",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-linux-intro",
+        "sourceLabels": ["Introduction to Linux commands."],
+        "title": "Introduction to Linux commands",
+        "classification": "EXTENSION"
+      },
+      {
+        "id": "f-linux-basic",
+        "sourceLabels": ["Basic Linux commands."],
+        "title": "Basic Linux commands",
+        "classification": "EXTENSION"
+      },
+      {
+        "id": "f-intro-programming",
+        "sourceLabels": ["Introduction to programming."],
+        "title": "Introduction to programming",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-arrays",
+        "sourceLabels": ["Arrays."],
+        "title": "Arrays",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-string-functions",
+        "sourceLabels": ["String functions."],
+        "title": "String functions",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-revision",
+        "sourceLabels": ["Revision."],
+        "title": "Revision",
+        "classification": "SUPPORTING"
+      },
+      {
+        "id": "f-mid-paper",
+        "sourceLabels": ["Mid-question-paper discussion."],
+        "title": "Mid-question-paper discussion",
+        "classification": "LEGACY_UNVERIFIED",
+        "needsHumanVerification": true,
+        "accuracyNotes": ["No question paper was supplied. No items invented."]
+      },
+      {
+        "id": "f-grand-test-1",
+        "sourceLabels": ["Grand Test 1."],
+        "title": "Grand Test 1",
+        "classification": "LEGACY_UNVERIFIED",
+        "needsHumanVerification": true,
+        "accuracyNotes": ["No test paper was supplied. No items invented."]
+      }
+    ]
+  }
+}

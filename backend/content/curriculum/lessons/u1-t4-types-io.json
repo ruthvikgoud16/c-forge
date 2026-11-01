@@ -1,0 +1,149 @@
+{
+  "id": "u1-t4-types-io",
+  "topicId": "u1-t4",
+  "unitId": "unit-1",
+  "title": "Data types and formatted input/output",
+  "classification": "OFFICIAL",
+  "mode": "learning",
+  "sourceLabel": "C Preliminaries: Data Types, Formatted Input/Output Statements.",
+  "prerequisites": [
+    { "id": "u1-t3", "label": "Keywords, identifiers, constants, variables", "href": "/learn/lessons/u1-t3-keywords-identifiers" }
+  ],
+  "objectives": [
+    "Name the common first-year types: int, char, float, double, and void.",
+    "Match a printf/scanf conversion to a type (%d, %c, %f, %lf).",
+    "Read a simple scanf line and say which variable is filled.",
+    "Explain why the format string must agree with the variable type."
+  ],
+  "completionCriteria": [
+    "Choose the correct conversion for int, char, and float.",
+    "Trace one printf and one scanf on paper.",
+    "Knowledge checks passed."
+  ],
+  "exerciseId": "22222222-2222-4222-8222-222222222222",
+  "notes": {
+    "introduction": "A type says what kind of value a box may hold, and how much memory it needs. Formatted I/O is how a beginner program talks to the keyboard and the screen using a format string.",
+    "beginner": "int holds whole numbers. char holds one character. float and double hold numbers with a fractional part; double is usually more precise. void means 'no value' and appears on main or on functions that return nothing. printf writes formatted text to the screen. scanf reads formatted text from the keyboard. The tokens %d, %c, %f, and %lf inside the format string tell C how to treat the next value. They must match the variable.",
+    "formal": "A data type specifies the set of values an object may take and the operations allowed. printf and scanf are standard I/O functions declared in <stdio.h>. Each conversion specifier in the format string describes the type of the corresponding argument. For scanf, most arguments must be addresses (use & on ordinary variables).",
+    "terms": [
+      { "term": "int", "meaning": "Integer type for whole numbers such as -2, 0, 51." },
+      { "term": "char", "meaning": "Type for a single character, stored as a small integer code." },
+      { "term": "float / double", "meaning": "Types for real numbers. Teaching labs often print float with %f and scan double with %lf." },
+      { "term": "void", "meaning": "Empty type: no value. int main(void) means main takes no arguments." },
+      { "term": "Format string", "meaning": "The first argument of printf/scanf, containing text plus % conversions." },
+      { "term": "& (in scanf)", "meaning": "The address-of operator. scanf needs the address of the variable so it can fill the box. Full pointer theory waits for later units." }
+    ],
+    "revision": [
+      "int ↔ %d, char ↔ %c, float ↔ %f, double (scanf) ↔ %lf.",
+      "Include <stdio.h>.",
+      "scanf(\"%d\", &n); — the & is required for an ordinary int."
+    ],
+    "examAnswer": "Basic C types include int, char, float, double, and void. Formatted output uses printf and formatted input uses scanf from stdio.h. Conversion specifiers must match the argument type; scanf stores into the object whose address is passed."
+  },
+  "mindMap": {
+    "title": "Types and formatted I/O",
+    "children": [
+      { "title": "int char float double void", "topicId": "u1-t4" },
+      { "title": "printf", "topicId": "u1-t4" },
+      { "title": "scanf and &", "topicId": "u1-t4" },
+      { "title": "Matching % letters", "topicId": "u1-t4" },
+      { "title": "Next: whole program shape", "topicId": "u1-t5" }
+    ]
+  },
+  "body": {
+    "objectives": "You should be able to declare an int, print it with %d, and read it with scanf and &.",
+    "prerequisiteCheck": "You know what a variable is (topic 3). If identifier rules are shaky, reopen that lesson before you type declarations.",
+    "introduction": "The machine from topic 1 stores bits. A type tells C how to group those bits: as a whole number, a character, or a fractional number. printf and scanf are the first functions most colleges show for talking to a human.",
+    "analogy": "Think of labelled jars. The label 'int' means 'whole biscuits only'. If you pour soup (a fractional number) into that jar and then tell the label-reader it is soup, the kitchen gets the recipe wrong. The format %d is the label you show the waiter (printf/scanf).",
+    "explanation": "First-year C usually starts with these types. int: whole numbers. Size is implementation-defined; many teaching machines use 4 bytes, but do not memorise a size the standard does not fix. char: one character, as in char grade = 'B';. float and double: numbers like 3.14. double can hold more precision. void: not a storage box for data; it marks 'no arguments' or 'no return value'.\n\nFormatted output: printf(\"Seats %d\\n\", 51); The string is printed. %d is replaced by 51. \\n is a newline (one character, written as two symbols in the source). You must write #include <stdio.h> so the compiler knows printf.\n\nFormatted input: int n; scanf(\"%d\", &n); The program waits. If the student types 12, n becomes 12. The & is not decoration. scanf is written so it can write into the variable; it needs the address of n. If you omit &, the program is wrong even if it sometimes appears to run. We do not yet teach pointer arithmetic.\n\nMatching rules beginners break most often: printf(\"%d\", 3.5) is a type mismatch. scanf(\"%d\", &x) when x is float is a mismatch. For a double named d, teaching convention is scanf(\"%lf\", &d) and printf(\"%f\", d) or \"%lf\" in C99 printf. Stick to one pair in a lab and keep them consistent.\n\nsizeof is not required in this topic; it appears under special operators later.",
+    "syntax": "#include <stdio.h>\nint n;\nprintf(\"n = %d\\n\", n);\nscanf(\"%d\", &n);\nchar g; scanf(\" %c\", &g);  /* leading space in the format skips leftover newlines — a common lab fix, standard C */",
+    "visual": {
+      "type": "io-table",
+      "rows": [
+        { "type": "int", "printf": "%d", "scanf": "%d" },
+        { "type": "char", "printf": "%c", "scanf": "%c or space-%c" },
+        { "type": "float", "printf": "%f", "scanf": "%f" },
+        { "type": "double", "printf": "%f or %lf", "scanf": "%lf" }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Print two integers",
+        "steps": [
+          "int a = 3, b = 4;",
+          "printf(\"%d + %d\\n\", a, b);",
+          "The first %d uses a, the second uses b, in order.",
+          "Screen shows: 3 + 4"
+        ]
+      },
+      {
+        "title": "Read one integer",
+        "steps": [
+          "int seats;",
+          "printf(\"How many seats? \");",
+          "scanf(\"%d\", &seats);",
+          "If the human types 51, seats holds 51.",
+          "printf(\"cap %d\\n\", seats); prints cap 51"
+        ]
+      }
+    ],
+    "execution": "Trace: int n = 0; scanf(\"%d\", &n); user types 7; printf(\"%d\", n); After scanf, n is 7. printf writes 7. If the user types hello, scanf fails and n may stay 0. Beginners should still initialise n = 0.",
+    "trace": {
+      "prompt": "int x = 2; printf(\"%d\", x + 3); What is printed?",
+      "answer": "5",
+      "dimension": "trace"
+    },
+    "predict": {
+      "prompt": "Which conversion is used to scan an int? Type the two characters starting with %.",
+      "answer": "%d",
+      "dimension": "predict"
+    },
+    "mistakes": [
+      "Forgetting #include <stdio.h>.",
+      "Forgetting & in scanf for an ordinary variable.",
+      "Mixing %d with a float value.",
+      "Using \\n as two characters in your head. It is one newline."
+    ],
+    "guided": {
+      "prompt": "Fill: scanf(\"%d\", ____ n); What symbol goes in the blank for an int n?",
+      "expected": ["&"],
+      "dimension": "syntax"
+    },
+    "independent": {
+      "prompt": "Write (on paper or in the studio later) a printf that prints the integer variable marks with a newline. What format token must appear?",
+      "answer": "%d",
+      "dimension": "independent_write"
+    },
+    "check": [
+      {
+        "id": "q1",
+        "kind": "mcq",
+        "dimension": "syntax",
+        "prompt": "scanf for a double named d should typically use:",
+        "choices": ["%d", "%c", "%lf", "%s for the number 3.5"],
+        "answer": 2
+      },
+      {
+        "id": "q2",
+        "kind": "mcq",
+        "dimension": "concept",
+        "prompt": "Why does scanf need &n for int n?",
+        "choices": ["To make n constant", "So scanf can store into n", "Because n is a keyword", "It is optional decoration"],
+        "answer": 1
+      },
+      {
+        "id": "q3",
+        "kind": "short",
+        "dimension": "syntax",
+        "prompt": "Which header must you include for printf?",
+        "answer": "stdio.h"
+      }
+    ],
+    "summary": "Types classify values. printf and scanf use a format string. Match %d/%c/%f/%lf to the variable. Use & with scanf on ordinary variables. This is standard C in <stdio.h>, not a compiler add-on.",
+    "revision": [
+      "Table: type versus % letter.",
+      "Write one scanf and one printf from memory.",
+      "Explain & in one sentence."
+    ]
+  }
+}

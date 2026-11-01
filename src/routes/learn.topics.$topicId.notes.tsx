@@ -2,23 +2,25 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { TopicShell } from "@/components/learning/TopicShell";
 import { SourceNotice } from "@/components/common/bits";
 import { CodeBlock } from "@/components/common/CodeBlock";
-import { loadTopic, topicHead } from "@/lib/topic-loader";
+import { loadTopic, requireTopicMaterial, topicHead } from "@/lib/topic-loader";
 import { services } from "@/services";
+import { TeachingEvent } from "@/components/learning/TeachingEvent";
 import { TOOL_META } from "@/data/tools";
 
 export const Route = createFileRoute("/learn/topics/$topicId/notes")({
-  loader: async ({ params }) => ({ ...(await loadTopic(params.topicId)), notes: (await services.lessons.notes(params.topicId))! }),
+  loader: async ({ params }) => ({ ...(await loadTopic(params.topicId)), notes: await requireTopicMaterial(await services.lessons.notes(params.topicId)) }),
   head: ({ loaderData }) => topicHead(`Notes: ${loaderData?.topic.title ?? "Topic"}`, `Study notes for ${loaderData?.topic.title ?? "this topic"}.`),
   component: NotesPage,
 });
 
 function NotesPage() {
-  const { topic, unit, notes } = Route.useLoaderData();
+  const { topic, unit, notes, teaching } = Route.useLoaderData();
   return (
-    <TopicShell topic={topic} unit={unit} title={`Notes — ${topic.title}`}>
+    <TopicShell topic={topic} unit={unit} title={`Notes — ${topic.title}`} teaching={teaching}>
+      <TeachingEvent topicId={topic.id} kind="notes_viewed" source={notes.source} />
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
-        <article className="max-w-[70ch] space-y-8 rounded-xl border border-border bg-card p-6 md:p-10">
-          <SourceNotice what="These notes" />
+        <article className="glass-panel max-w-[70ch] space-y-8 rounded-[1.75rem] p-6 md:p-10">
+          <SourceNotice what="These notes" source={notes.source} />
           {notes.sections.map((s) => (
             <section key={s.heading}>
               <h2 className="border-b border-border pb-2 font-display text-xl">{s.heading}</h2>

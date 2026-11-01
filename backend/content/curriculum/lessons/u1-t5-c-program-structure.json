@@ -1,0 +1,153 @@
+{
+  "id": "u1-t5-c-program-structure",
+  "topicId": "u1-t5",
+  "unitId": "unit-1",
+  "title": "Structure of a C program — examples",
+  "classification": "OFFICIAL",
+  "mode": "learning",
+  "sourceLabel": "C Preliminaries: Structure of a C Program — Examples.",
+  "prerequisites": [
+    { "id": "u1-t4", "label": "Data types and formatted I/O", "href": "/learn/lessons/u1-t4-types-io" }
+  ],
+  "objectives": [
+    "Name the usual parts of a first C file: comments, include, main, declarations, statements, return.",
+    "Explain that execution of a hosted program starts at main.",
+    "Read a complete tiny program and say what it prints.",
+    "Write or complete a standard C program that compiles under the academy judge."
+  ],
+  "completionCriteria": [
+    "Trace the greeting program line by line.",
+    "Submit a compiling program via the existing judge (Hello, CForge! or add-two-integers).",
+    "Knowledge checks passed."
+  ],
+  "exerciseId": "11111111-1111-4111-8111-111111111111",
+  "notes": {
+    "introduction": "A C program is a text file the compiler turns into instructions for the machine from topic 1. First-year programs almost always have one function called main.",
+    "beginner": "A typical first program has: a comment (notes for humans), #include <stdio.h> (bring in printf/scanf), int main(void) { ... } (the function that runs first), declarations, statements such as printf, and return 0; to tell the system the program finished normally. Braces { } wrap the body of main. Every statement ends with a semicolon.",
+    "formal": "In a hosted C environment, program startup calls the function main. A translation unit may contain preprocessor directives, declarations, and function definitions. main is commonly declared int main(void) or int main(int argc, char *argv[]). A return from main with value 0 indicates successful termination. Comments are /* ... */ in all standard C, and // ... from C99 onward.",
+    "terms": [
+      { "term": "Preprocessor directive", "meaning": "A line starting with #, such as #include, handled before real compilation." },
+      { "term": "main", "meaning": "The function where a usual student program begins running." },
+      { "term": "Function body", "meaning": "The statements between { and }." },
+      { "term": "Statement", "meaning": "A complete action ending with ; such as printf(\"hi\\n\");" },
+      { "term": "return 0", "meaning": "Leave main and report success to the operating system." },
+      { "term": "Comment", "meaning": "Text the compiler ignores. /* */ works in every standard C. // is standard from C99." }
+    ],
+    "revision": [
+      "Order: includes → main → declarations → statements → return.",
+      "Braces required. Semicolons required.",
+      "The academy compiles with gcc -std=c11, which is standard C, not a vendor language."
+    ],
+    "examAnswer": "A simple C program contains preprocessor directives, the function main, declarations, statements, and a return. Execution starts at main. Comments document the code. Header stdio.h is included for standard I/O."
+  },
+  "mindMap": {
+    "title": "Structure of a C program",
+    "children": [
+      { "title": "Comments", "topicId": "u1-t5" },
+      { "title": "#include", "topicId": "u1-t5" },
+      { "title": "main", "topicId": "u1-t5" },
+      { "title": "Declarations and statements", "topicId": "u1-t5" },
+      { "title": "return", "topicId": "u1-t5" },
+      { "title": "Next: operators", "topicId": "u1-t6" }
+    ]
+  },
+  "body": {
+    "objectives": "You should be able to point at each line of a 10-line program and say why it is there.",
+    "prerequisiteCheck": "You can declare an int and call printf (topic 4). If %d is unclear, go back.",
+    "introduction": "This topic is the first time the pieces sit in one file. The judge you already used for Hello, CForge! compiles exactly this kind of file. The academy never runs GCC inside the Next.js process.",
+    "analogy": "A school essay has a heading, a first paragraph, a body, and an ending. A C file has an include heading, a main paragraph, body statements, and return as the last line of that paragraph. Skip the heading and the reader (the compiler) does not know printf.",
+    "explanation": "Read this complete program:\n\n#include <stdio.h>\n\nint main(void) {\n    printf(\"Hello, CForge!\\n\");\n    return 0;\n}\n\nLine 1 is a preprocessor directive. It copies declarations from the standard header stdio.h so printf is known. It is not a C statement; it has no semicolon.\n\nint main(void) starts a function named main that returns an int and takes no parameters. void inside the parentheses is standard C and means 'no arguments'. Some old books write main() with an empty pair; this academy prefers int main(void).\n\nThe opening { begins the body. printf(...) is a statement: call the library function and pass a string. \\n ends the line on the screen. The semicolon ends the statement. return 0; ends main successfully. The closing } matches the opening brace.\n\nYou may add declarations at the start of a block: int year = 2026; In C99 and C11 (our judge uses c11) you may also declare nearer first use. Keep beginners' declarations at the top of main if your teacher asks for that style.\n\nComments: /* this is ignored */ can span lines and is in every C standard. // this is ignored to the end of the line is standard from C99. Both are fine under -std=c11. They are not compiler-only extensions.\n\nA program with no main will not link as a hosted student program. A missing semicolon is a compile error. A missing } is a compile error. Those messages come from the judge, not from an AI.",
+    "syntax": "#include <stdio.h>\nint main(void) {\n    /* declarations */\n    /* statements */\n    return 0;\n}\nEvery statement inside main ends with ;  Directives starting with # do not.",
+    "visual": {
+      "type": "program-skeleton",
+      "rows": [
+        { "part": "#include <stdio.h>", "role": "Ask the compiler for standard I/O." },
+        { "part": "int main(void) {", "role": "Start of the program." },
+        { "part": "    declarations", "role": "Name the boxes." },
+        { "part": "    statements", "role": "Do the work." },
+        { "part": "    return 0;", "role": "Finish successfully." },
+        { "part": "}", "role": "End of main." }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Greeting program (same idea as Hello, CForge!)",
+        "steps": [
+          "Include stdio.h.",
+          "Open main.",
+          "printf the exact line required by the exercise.",
+          "return 0.",
+          "Compile and run through the academy judge, not on the academy server."
+        ]
+      },
+      {
+        "title": "Program with a variable",
+        "steps": [
+          "#include <stdio.h>",
+          "int main(void) { int seats = 51; printf(\"%d\\n\", seats); return 0; }",
+          "Declaration seats happens first.",
+          "printf uses %d because seats is int.",
+          "Output is 51 and a newline."
+        ]
+      }
+    ],
+    "execution": "Trace seats program: include processed → main starts → seats created with 51 → printf writes 51\\n → return 0 → process ends. If printf is misspelled, the judge reports a compile error and no program runs.",
+    "trace": {
+      "prompt": "In the greeting program, which function runs first: printf or main?",
+      "answer": "main",
+      "dimension": "trace"
+    },
+    "predict": {
+      "prompt": "What does printf(\"Hi\\n\"); print (two letters and then the cursor moves)?",
+      "answer": "Hi",
+      "dimension": "predict"
+    },
+    "mistakes": [
+      "Putting a semicolon after #include <stdio.h> — the # line is not a statement.",
+      "Forgetting the closing brace of main.",
+      "Writing void main() because an old book did. This academy uses int main(void) and return 0; which matches hosted standard C.",
+      "Trying to compile in the Next.js process. Only the judge service may run GCC."
+    ],
+    "guided": {
+      "prompt": "List the three words in the first line of a typical I/O program: hash-include, the header name, and the punctuation around the header.",
+      "expected": ["include", "stdio.h"],
+      "dimension": "syntax"
+    },
+    "independent": {
+      "prompt": "Open the Hello, CForge! studio and submit a complete program. What must the single output line be (punctuation included)?",
+      "answer": "Hello, CForge!",
+      "dimension": "independent_write"
+    },
+    "check": [
+      {
+        "id": "q1",
+        "kind": "mcq",
+        "dimension": "concept",
+        "prompt": "Where does a usual student program start running?",
+        "choices": ["stdio.h", "printf", "main", "The first comment"],
+        "answer": 2
+      },
+      {
+        "id": "q2",
+        "kind": "mcq",
+        "dimension": "syntax",
+        "prompt": "Which is a complete statement?",
+        "choices": ["#include <stdio.h>", "int main(void)", "return 0;", "{"],
+        "answer": 2
+      },
+      {
+        "id": "q3",
+        "kind": "short",
+        "dimension": "syntax",
+        "prompt": "What integer does this academy use with return to mean success?",
+        "answer": "0"
+      }
+    ],
+    "summary": "A first C file is includes, main, declarations, statements, return. Execution starts at main. Comments document. Semicolons end statements. Use the existing Monaco + judge path to run real programs.",
+    "revision": [
+      "Write the skeleton of main from memory.",
+      "Mark which lines are directives versus statements.",
+      "Submit Hello, CForge! if you have not yet."
+    ]
+  }
+}

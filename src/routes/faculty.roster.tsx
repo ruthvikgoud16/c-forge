@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Search, FileSpreadsheet, UserCog, X } from "lucide-react";
-import { services } from "@/services";
+import { IS_DEMO, services } from "@/services";
 import { PageHeader, Panel, DemoBadge, EmptyState } from "@/components/common/bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,9 +28,15 @@ function StatusChip({ status }: { status: AccountStatus }) {
 
 function FacultyRoster() {
   const qc = useQueryClient();
-  const { data: roster = [], isLoading } = useQuery({
+  const { data: roster = [], isLoading, isError, error } = useQuery({
     queryKey: ["faculty-roster"],
     queryFn: () => services.faculty.roster(),
+    retry: false,
+  });
+  const { data: summary } = useQuery({
+    queryKey: ["faculty-summary"],
+    queryFn: () => services.faculty.summary(),
+    retry: false,
   });
 
   const [q, setQ] = useState("");
@@ -54,11 +60,15 @@ function FacultyRoster() {
       toast.error("Name must be at least 2 characters.");
       return;
     }
-    await services.faculty.rename(renameOpen.id, renameValue.trim());
-    toast.success("Name updated (demo-only).");
-    setRenameOpen(null);
-    setRenameValue("");
-    qc.invalidateQueries({ queryKey: ["faculty-roster"] });
+    try {
+      await services.faculty.rename(renameOpen.id, renameValue.trim());
+      toast.success(IS_DEMO ? "Name updated (demo-only)." : "Name updated on the official roster.");
+      setRenameOpen(null);
+      setRenameValue("");
+      qc.invalidateQueries({ queryKey: ["faculty-roster"] });
+    } catch (cause) {
+      toast.error(cause instanceof Error ? cause.message : "The roster rename was not saved.");
+    }
   }
 
   async function submitImport() {
@@ -79,11 +89,11 @@ function FacultyRoster() {
       <PageHeader
         eyebrow="Faculty · roster"
         title={<>Cohort <em className="text-copper">roster</em></>}
-        lede="Search, filter and manage approved roster entries. Rename students, bulk-import roll numbers from CSV, and open student detail pages."
+        lede={IS_DEMO ? "Search, filter and manage approved roster entries. Rename students, bulk-import roll numbers from CSV, and open student detail pages." : "Official 55-student roster names come from the verified 2026-10-31 CSV. Accounts stay invitation-only. Date of birth is not listed here."}
         actions={
           <>
-            <DemoBadge>Demo data</DemoBadge>
-            <Dialog open={importOpen} onOpenChange={setImportOpen}>
+            {IS_DEMO && <DemoBadge>Demo data</DemoBadge>}
+            {IS_DEMO ? <Dialog open={importOpen} onOpenChange={setImportOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" data-testid="roster-import-btn"><FileSpreadsheet className="size-4" /> Import CSV</Button>
               </DialogTrigger>
@@ -91,7 +101,7 @@ function FacultyRoster() {
                 <DialogHeader>
                   <DialogTitle>Import roster from CSV</DialogTitle>
                   <DialogDescription>
-                    Paste CSV with the header row <code className="font-mono">roll_number,name</code>. Duplicates by roll number are skipped. Capacity is 55.
+                    {IS_DEMO ? <>Paste CSV with the header row <code className="font-mono">roll_number,name</code>. Duplicates by roll number are skipped. Capacity is 55.</> : "Paste import is not supported. The server imports a verified roster file, not pasted CSV."}
                   </DialogDescription>
                 </DialogHeader>
                 <Textarea
@@ -106,7 +116,7 @@ function FacultyRoster() {
                   <Button onClick={submitImport} data-testid="roster-import-submit">Import (demo)</Button>
                 </DialogFooter>
               </DialogContent>
-            </Dialog>
+            </Dialog> : <p className="max-w-xs text-xs text-muted-foreground">Paste CSV import is not supported. The server imports a verified roster file.</p>}
           </>
         }
       />
@@ -148,13 +158,15 @@ function FacultyRoster() {
             </SelectContent>
           </Select>
           <p className="font-mono text-xs text-muted-foreground">
-            Showing {filtered.length} of {roster.length} · capacity 55
+            Showing {filtered.length} of {roster.length}{summary ? ` · capacity ${summary.capacity}` : ""}
           </p>
         </div>
 
         <div className="mt-5 overflow-x-auto">
           {isLoading ? (
             <p className="animate-pulse text-sm text-muted-foreground">Loading roster…</p>
+          ) : isError ? (
+            <EmptyState title="Roster unavailable" body={error instanceof Error ? error.message : "The faculty roster API did not return entries. No students were invented."} />
           ) : filtered.length === 0 ? (
             <EmptyState title="No roster entries match" body="Try clearing filters or adjusting your search." />
           ) : (
@@ -210,7 +222,9 @@ function FacultyRoster() {
           <DialogHeader>
             <DialogTitle>Rename student</DialogTitle>
             <DialogDescription>
-              Updating display name only. Roll number stays the same. This change persists only in this demo session.
+              {IS_DEMO
+                ? "Updating display name only. Roll number stays the same. This change persists only in this demo session."
+                : "Updating display name only. Roll number stays the same. The change is stored with the official roster and does not create an account."}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">

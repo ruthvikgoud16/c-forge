@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { highlightC } from "@/components/common/CodeBlock";
 import { Ring } from "@/components/art/Ring";
 import { cn } from "@/lib/utils";
+import { services } from "@/services";
 
-export function Flashcards({ cards }: { cards: Flashcard[] }) {
+export function Flashcards({ cards, topicId, source }: { cards: Flashcard[]; topicId?: string; source?: "demo" | "original" }) {
   const [i, setI] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [seen, setSeen] = useState<Set<string>>(new Set());
@@ -14,7 +15,17 @@ export function Flashcards({ cards }: { cards: Flashcard[] }) {
   const card = cards[i];
 
   const reveal = useCallback(() => { if (card) { setRevealed(true); setSeen((s) => new Set(s).add(card.id)); } }, [card]);
-  const advance = useCallback(() => { if (revealed) { setI((x) => x + 1); setRevealed(false); } }, [revealed]);
+  const advance = useCallback(() => {
+    if (!revealed) return;
+    setI((current) => {
+      const next = current + 1;
+      if (next >= cards.length && topicId && source === "original") {
+        void services.progress.recordTeachingEvent(topicId, "flashcards_reviewed");
+      }
+      return next;
+    });
+    setRevealed(false);
+  }, [revealed, cards.length, topicId, source]);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
@@ -46,7 +57,7 @@ export function Flashcards({ cards }: { cards: Flashcard[] }) {
             <Ring value={seen.size} max={cards.length} size={110} color="var(--color-ember)" track="oklch(1 0 0 / .12)"><Sparkles className="size-7 text-ember" /></Ring>
             <p className="eyebrow mt-4 !text-ember">Pass complete</p>
             <p className="mt-2 font-display text-3xl">You went through all {cards.length} cards.</p>
-            <p className="mt-2 text-sm text-white/70">Review history is not saved in demo mode.</p>
+            <p className="mt-2 text-sm text-white/70">{source === "original" ? "Completing a pass records flashcards_reviewed. There is no spaced-repetition schedule." : "Review history is not saved in demo mode. There is no spaced-repetition schedule."}</p>
             <Button variant="hero" className="press mt-6 rounded-full" onClick={() => { setI(0); setRevealed(false); setSeen(new Set()); }} data-testid="flashcards-restart"><RotateCcw /> Start another pass</Button>
           </div>
         </div>

@@ -111,13 +111,14 @@ export interface MindMap {
   edges: MindMapEdge[];
 }
 
-export type QuestionType = "single-choice" | "predict-output" | "true-false";
+export type QuestionType = "single-choice" | "predict-output" | "true-false" | "short-answer";
 export interface Question {
   id: string;
   type: QuestionType;
   prompt: string;
   code?: string;
   options: { id: string; label: string }[];
+  family?: string;
 }
 
 export interface Assessment {
@@ -138,8 +139,8 @@ export interface PreviewResult {
   correct: number;
   total: number;
   perQuestion: { questionId: string; correct: boolean; correctOptionId: string | undefined }[];
-  /** Always true in the prototype: results are computed client-side and not saved. */
-  isPreview: true;
+  /** True only for the explicit demo adapter. Server submissions are authoritative. */
+  isPreview: boolean;
 }
 
 export type MasteryState = "not-started" | "opened" | "demonstrated" | "mastered" | "needs-practice";
@@ -158,11 +159,16 @@ export interface AssessmentAttempt {
   total: number;
 }
 
+export type Appearance = "light" | "dark";
+
 export interface StudentProfile {
   id: string;
   rollNumber: string;
   name: string;
   cohort: string;
+  dateOfBirth?: string | null;
+  appearance?: Appearance | null;
+  profileComplete?: boolean;
 }
 
 export interface StudentProgress {
@@ -170,6 +176,7 @@ export interface StudentProgress {
   topics: TopicProgress[];
   attempts: AssessmentAttempt[];
   recent: { topicId: string; resource: string | undefined; date: string }[];
+  recommendedTopicId?: string;
 }
 
 export type Difficulty = "warm-up" | "core" | "stretch";
@@ -187,15 +194,15 @@ export interface Exercise {
   hiddenTestCount: number;
 }
 
-export type JudgeVerdict = "accepted" | "wrong-answer" | "compile-error" | "runtime-error";
+export type JudgeVerdict = "accepted" | "wrong-answer" | "compile-error" | "runtime-error" | "unavailable";
 export interface JudgeResult {
   mode: "run" | "submit";
   verdict: JudgeVerdict;
   compilerOutput: string;
   stdout: string;
   tests?: { name: string; passed: boolean }[];
-  /** Always true until the secure server-side judge is integrated. */
-  isSimulated: true;
+  /** True only when the explicit demo adapter simulated execution. */
+  isSimulated: boolean;
 }
 
 export type AccountStatus = "active" | "invited" | "not-invited";
@@ -222,9 +229,9 @@ export interface FacultySummary {
   active: number;
   invited: number;
   notInvited: number;
-  unitProgress: { unitId: UnitId; demonstrated: number; mastered: number; needsPractice: number }[];
+  unitProgress: { unitId: UnitId; title?: string; demonstrated: number; mastered: number; needsPractice: number }[];
   assessmentBuckets: { label: string; count: number | null }[];
-  revisitTopics: { topicId: string; students: number }[];
+  revisitTopics: { topicId: string; students: number | null }[];
   engagement: { label: string; value: number }[];
 }
 
@@ -233,7 +240,74 @@ export interface Session {
   role: Role;
   displayName: string;
   rollNumber?: string;
-  isDemo: true;
+  isDemo: boolean;
 }
 
 export type AuthResult = { ok: true; session: Session } | { ok: false; error: string };
+
+export type StartIntent =
+  | "from_scratch"
+  | "test_knowledge"
+  | "theory_weak_coding"
+  | "exam_revision"
+  | "problem_solving";
+
+export type PlacementState =
+  | "NOT_ASSESSED"
+  | "NEEDS_FOUNDATION"
+  | "NEEDS_LEARNING"
+  | "PARTIALLY_DEMONSTRATED"
+  | "DEMONSTRATED"
+  | "NEEDS_REVISION";
+
+export type DiagnosticItemKind = "mcq" | "short";
+
+export interface DiagnosticItem {
+  id: string;
+  topicId: string;
+  method: string;
+  kind: DiagnosticItemKind;
+  prompt: string;
+  choices?: string[];
+  dimension: string;
+}
+
+export interface DiagnosticSessionSummary {
+  id: string;
+  status: "open" | "submitted";
+  rubricVersion: string;
+  createdAt: string;
+  submittedAt?: string;
+}
+
+export interface DiagnosticSession extends DiagnosticSessionSummary {
+  curriculumVersion?: string;
+  items: DiagnosticItem[];
+}
+
+export interface DiagnosticGrade {
+  itemId: string;
+  correct: boolean;
+  topicId: string;
+}
+
+export interface DiagnosticSubmitResult {
+  sessionId: string;
+  graded: DiagnosticGrade[];
+  placements: { topicId: string; state: PlacementState }[];
+  rubricVersion: string;
+}
+
+export interface PlacementTopic {
+  id: string;
+  sourceLabel: string;
+  placement: PlacementState | null;
+  mastery: string | null;
+  readiness: null;
+}
+
+export interface PlacementSnapshot {
+  rubricVersion: string;
+  placementIsNotMastery: true;
+  topics: PlacementTopic[];
+}

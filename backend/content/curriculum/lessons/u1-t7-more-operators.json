@@ -1,0 +1,160 @@
+{
+  "id": "u1-t7-more-operators",
+  "topicId": "u1-t7",
+  "unitId": "unit-1",
+  "title": "Increment, decrement, bitwise, ternary, and special operators",
+  "classification": "OFFICIAL",
+  "mode": "learning",
+  "sourceLabel": "Operators: Increment and Decrement, Bitwise, Ternary and Special Operators.",
+  "prerequisites": [
+    { "id": "u1-t6", "label": "Arithmetic, assignment, relational, logical operators", "href": "/learn/lessons/u1-t6-basic-operators" }
+  ],
+  "objectives": [
+    "Trace ++ and -- in prefix and postfix form on a single variable.",
+    "Explain bitwise & | ^ ~ << >> as operations on bits, with a tiny example.",
+    "Evaluate the ternary operator c ? a : b.",
+    "Name common special operators used in first year: sizeof, comma, and (preview) & and *.",
+    "State when a construct is standard C versus implementation-defined."
+  ],
+  "completionCriteria": [
+    "Trace one prefix and one postfix example correctly.",
+    "Evaluate a ternary with a known condition.",
+    "Knowledge checks passed. Do not claim mastery of bitwise exam tricks beyond the supplied examples."
+  ],
+  "notes": {
+    "introduction": "The lesson-plan title groups four leftover operator families. We treat each family separately so they do not blur. Bitwise work is still just 0 and 1 from topic 1.",
+    "beginner": "++ adds one to a variable. -- subtracts one. Written before the name (++n) it changes n first, then uses the new value. Written after (n++) it uses the old value, then changes n. Bitwise operators look at each bit: & both 1, | at least one 1, ^ different bits, ~ flip, << shift left, >> shift right. The ternary operator is a short if: condition ? value_if_true : value_if_false. Special operators in this college list usually include sizeof (size in bytes), the comma operator, and sometimes & (address) and * (indirection) — those last two are previewed only.",
+    "formal": "Prefix ++/-- increment or decrement the operand and yield the updated value. Postfix ++/-- yield the previous value and update the operand as a side effect. Bitwise operators apply independently to each bit of the integer representation. The conditional operator ?: is the only ternary operator in C. sizeof yields the size in bytes of a type or expression as a size_t. Shifting a negative value or shifting by a width greater than the type is undefined or implementation-defined; first-year examples should use small non-negative ints and modest shift counts.",
+    "terms": [
+      { "term": "Prefix ++n", "meaning": "Add one, then use n." },
+      { "term": "Postfix n++", "meaning": "Use n, then add one." },
+      { "term": "Bitwise AND &", "meaning": "Each bit is 1 only if both sides have 1. Different from &&." },
+      { "term": "Ternary ?: ", "meaning": "Choose one of two values using a condition." },
+      { "term": "sizeof", "meaning": "Standard operator. Result is the size in bytes. Do not memorise a magic number for int; it can differ between machines." },
+      { "term": "Comma operator", "meaning": "Evaluate left, then right; the value is the right. Rare in clear beginner code." }
+    ],
+    "revision": [
+      "++n versus n++ — when is n used?",
+      "& logical is &&. Bitwise AND is &.",
+      "cond ? a : b chooses a if cond is non-zero.",
+      "sizeof is standard C. Exact byte sizes are not a promise of this course."
+    ],
+    "examAnswer": "++ and -- increment or decrement; prefix updates before the value is used, postfix after. Bitwise operators manipulate bits. The ternary operator selects between two expressions. Special operators include sizeof and comma. Use only well-defined shifts on non-negative values in this course."
+  },
+  "mindMap": {
+    "title": "More operators",
+    "children": [
+      { "title": "++ and --", "topicId": "u1-t7" },
+      { "title": "Bitwise & | ^ ~ << >>", "topicId": "u1-t7" },
+      { "title": "Ternary ?:", "topicId": "u1-t7" },
+      { "title": "sizeof, comma, & * preview", "topicId": "u1-t7" },
+      { "title": "Unit 1 lab (not written as a full lesson)", "topicId": "u1-t8" }
+    ]
+  },
+  "body": {
+    "objectives": "You should trace ++/-- without a computer, evaluate one ternary, and compute 5 & 3 and 5 | 3 on paper.",
+    "prerequisiteCheck": "You must be solid on = versus == and on && versus a single &. Reopen topic 6 if those still mix.",
+    "introduction": "These operators look small and cause large exam mistakes. We go slowly. We will not stack many ++ in one line — that is hard to read and can be undefined if the same variable is modified twice without a sequence point. First-year style: one change per statement.",
+    "analogy": "A turnstile counter is ++: one more person. Prefix is 'add, then tell me the new number'. Postfix is 'tell me the number you had, then add'. Bitwise is two rows of light switches; & turns a light on only if both rows have that switch on. Ternary is a fork in a path with exactly two destinations.",
+    "explanation": "Increment and decrement. int n = 5; ++n; now n is 6. n--; now n is 5. The useful distinction is inside a larger expression. int n = 5; int a = ++n; n becomes 6, a is 6. int n = 5; int b = n++; b is 5, then n becomes 6. After both stories n is 6, but a and b differ. Do not write n++ * ++n. The standard does not define that.\n\nBitwise, using 4-bit teaching pictures (the extra high bits are 0). 5 is 0101. 3 is 0011. 5 & 3 is 0001 = 1. 5 | 3 is 0111 = 7. 5 ^ 3 is 0110 = 6 (bits that differ). ~ on a signed int is more than first-year need; we only say it flips every bit and the decimal result depends on the width and representation. << 1 on a non-negative value multiplies by two when no 1 falls off the left: 3 << 1 is 6. >> 1 on a non-negative value divides by two: 6 >> 1 is 3. Shifts of negative values or huge counts are not used in this lesson.\n\nTernary. int marks = 42; int pass = (marks >= 40) ? 1 : 0; pass is 1. It is an expression, so it produces a value. It is not a replacement for every if; long branches should stay as if in Unit 2.\n\nSpecial operators. sizeof(int) is an integer number of bytes on that machine — do not hard-code 4 in an exam answer unless the question gives the size. The comma operator in x = (a=1, a+2); sets a to 1 then yields 3. Prefer two statements. &variable is the address (you already used it in scanf). *pointer is indirection — named only so the symbol is not a surprise; Unit 4 will teach it properly.\n\nAll of ++ -- ?: sizeof comma & * and the bitwise operators discussed here are standard C. We are not using a compiler-specific rotate intrinsic or a non-standard bitwise method.",
+    "syntax": "++n n++ --n n--\nbitwise: a&b a|b a^b ~a a<<k a>>k\nternary: cond ? expr_true : expr_false\nsizeof(type)  sizeof expr\nKeep ++/-- on their own line when you are learning.",
+    "visual": {
+      "type": "eval-steps",
+      "title": "int n=5; int a=n++;",
+      "steps": [
+        "n starts at 5",
+        "postfix: a receives 5",
+        "then n becomes 6",
+        "result: a is 5, n is 6"
+      ]
+    },
+    "examples": [
+      {
+        "title": "Prefix versus postfix",
+        "steps": [
+          "int n = 4; int p = ++n;  n is 5, p is 5.",
+          "int n = 4; int q = n++;  q is 4, n is 5.",
+          "printf(\"%d\", n); in both finished stories prints 5.",
+          "The printed p and q differ."
+        ]
+      },
+      {
+        "title": "Bitwise on 5 and 3",
+        "steps": [
+          "Write 5 as 0101 and 3 as 0011 (4 teaching bits).",
+          "AND: 0001 → 1",
+          "OR: 0111 → 7",
+          "XOR: 0110 → 6",
+          "5 << 1 → 1010 → 10 if we keep enough bits."
+        ]
+      },
+      {
+        "title": "Ternary for a sign label",
+        "steps": [
+          "int n = -2;",
+          "n >= 0 ? 'P' : 'N'  chooses 'N'",
+          "printf(\"%c\", n >= 0 ? 'P' : 'N'); prints N",
+          "Equivalent if: if (n >= 0) print P else print N."
+        ]
+      }
+    ],
+    "execution": "Trace int n=2; int m = ++n * 3; ++n makes n=3 first, then 3*3=9, m is 9. Trace int n=2; int m = n++ * 3; uses 2*3=6 for m, then n becomes 3.",
+    "trace": {
+      "prompt": "int n=5; int a=++n; What are a and n? Write two integers.",
+      "answer": "6 6",
+      "dimension": "trace"
+    },
+    "predict": {
+      "prompt": "What is 5 & 3 as a decimal integer?",
+      "answer": "1",
+      "dimension": "predict"
+    },
+    "mistakes": [
+      "Using & when you meant &&.",
+      "Writing n++ * ++n in one expression.",
+      "Believing sizeof(int) is always 4 on every computer.",
+      "Shifting by 40 on a 32-bit int. That is not a first-year toy example; it is undefined or meaningless."
+    ],
+    "guided": {
+      "prompt": "5 | 3 equals which decimal? Type the integer.",
+      "expected": ["7"],
+      "dimension": "predict"
+    },
+    "independent": {
+      "prompt": "Evaluate (4 > 1) ? 10 : 20. Type the integer chosen.",
+      "answer": "10",
+      "dimension": "independent_write"
+    },
+    "check": [
+      {
+        "id": "q1",
+        "kind": "mcq",
+        "dimension": "trace",
+        "prompt": "int n=1; printf(\"%d\", n++); What is printed?",
+        "choices": ["0", "1", "2", "undefined always"],
+        "answer": 1
+      },
+      {
+        "id": "q2",
+        "kind": "mcq",
+        "dimension": "concept",
+        "prompt": "The operator ?: is called:",
+        "choices": ["binary AND", "ternary / conditional", "sizeof", "comma"],
+        "answer": 1
+      },
+      {
+        "id": "q3",
+        "kind": "short",
+        "dimension": "predict",
+        "prompt": "Decimal value of 6 >> 1 (non-negative shift as in the lesson).",
+        "answer": "3"
+      }
+    ],
+    "summary": "++/-- change by one; prefix versus postfix is about when the value is used. Bitwise works per bit and is not && ||. Ternary chooses a value. sizeof and comma are special; & and * are previewed. Stay inside well-defined, small examples.",
+    "revision": [
+      "Two-column table: ++n versus n++.",
+      "Compute 12 & 10 and 12 | 10.",
+      "Rewrite one ternary as if-else in English."
+    ]
+  }
+}

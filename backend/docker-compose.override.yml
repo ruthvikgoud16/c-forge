@@ -1,0 +1,7 @@
+# Merged automatically by `docker compose up` on a developer machine.
+# Production must use: docker compose -f docker-compose.yml up
+# so this file is not applied and 7080 is not published at all.
+services:
+  judge:
+    ports:
+      - "127.0.0.1:7080:7080"

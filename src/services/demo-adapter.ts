@@ -1,7 +1,20 @@
 // DEMO ADAPTER — in-memory, deterministic. No network, no real auth, no code execution.
 import type { CForgeServices } from "./contracts";
-import type { Invitation, RosterEntry, Session, UnitId } from "@/domain/types";
+import type { Invitation, RosterEntry, Session, StartIntent, UnitId } from "@/domain/types";
+import { mapDashboard } from "@/lib/adaptive";
+import { demoFoundationLibrary, findFoundationTopic } from "@/lib/foundation";
+import {
+  hrefIfHttp,
+  labIngestPayload,
+  mapLabCollection,
+  mapPaperCollection,
+  paperIngestPayload,
+  type LabResource,
+  type PaperResource,
+} from "@/lib/resources";
 import { topics, units } from "@/data/fixtures/curriculum";
+import { topicAssessmentId, unitAssessmentId } from "@/lib/assessment";
+import { mergeTeachingPackage } from "@/lib/teaching";
 import { exercises } from "@/data/fixtures/exercises";
 import { demoStudent, progressFor, roster as rosterFixture, ROSTER_CAPACITY } from "@/data/fixtures/people";
 import { buildFlashcards, buildLesson, buildNotes, buildOneShot, buildQuestions, buildTopicMindMap, buildUnitMindMap, type BuiltAssessment } from "@/data/generators";
@@ -10,16 +23,18 @@ import { TOOL_IDS, TOOL_META } from "@/data/tools";
 const roster: RosterEntry[] = rosterFixture.map((r) => ({ ...r }));
 const SESSION_KEY = "cforge.demo.session";
 const delay = <T,>(v: T) => Promise.resolve(v);
+const demoLabs: LabResource[] = [];
+const demoPapers: PaperResource[] = [];
 
 const assessments: BuiltAssessment[] = [
   ...topics.map((t) => {
     const { questions, key } = buildQuestions([t], topics, 4);
-    return { id: `ta-${t.id}`, kind: "topic" as const, title: `${t.title}`, scopeId: t.id, questionCount: questions.length, questions, key, source: "demo" as const };
+    return { id: topicAssessmentId(t.id), kind: "topic" as const, title: `${t.title}`, scopeId: t.id, questionCount: questions.length, questions, key, source: "demo" as const };
   }),
   ...units.map((u) => {
     const scope = topics.filter((t) => t.unitId === u.id);
     const { questions, key } = buildQuestions(scope, topics, 10);
-    return { id: `ua-${u.id}`, kind: "unit" as const, title: `Unit ${u.number}: ${u.title}`, scopeId: u.id, questionCount: questions.length, questions, key, source: "demo" as const };
+    return { id: unitAssessmentId(u.id), kind: "unit" as const, title: `Unit ${u.number}: ${u.title}`, scopeId: u.id, questionCount: questions.length, questions, key, source: "demo" as const };
   }),
 ];
 
@@ -31,19 +46,6 @@ function readSession(): Session | null {
   } catch {
     return null;
   }
-}
-
-function hasMain(code: string) {
-  return /\bint\s+main\s*\(/.test(code);
-}
-function balanced(code: string) {
-  let b = 0;
-  for (const ch of code) {
-    if (ch === "{") b++;
-    if (ch === "}") b--;
-    if (b < 0) return false;
-  }
-  return b === 0;
 }
 
 export const demoServices: CForgeServices = {
@@ -119,11 +121,63 @@ export const demoServices: CForgeServices = {
       const t = topics.find((x) => x.id === id);
       return t ? buildTopicMindMap(t) : null;
     },
+    async official() {
+      return {
+        officialUnitCount: units.length,
+        officialTopicCount: topics.filter((topic) => topic.unitId !== "supplementary").length,
+        units: units.map((unit) => ({
+          id: unit.id,
+          title: unit.title,
+          sourceLabel: unit.title,
+          topicCount: topics.filter((topic) => topic.unitId === unit.id).length,
+        })),
+        foundationIsOfficialUnit: false as const,
+      };
+    },
+    async teachingTopicIds() {
+      return topics.map((topic) => topic.id);
+    },
   },
   lessons: {
     lesson: async (id) => { const t = topics.find((x) => x.id === id); return t ? buildLesson(t) : null; },
     notes: async (id) => { const t = topics.find((x) => x.id === id); return t ? buildNotes(t) : null; },
     oneShot: async (id) => { const t = topics.find((x) => x.id === id); return t ? buildOneShot(t) : null; },
+  },
+  teaching: {
+    async forTopic(topicId) {
+      const topic = topics.find((row) => row.id === topicId);
+      if (!topic) return null;
+      return mergeTeachingPackage({
+        topicId,
+        source: "demo",
+        graphConcepts: topic.concepts,
+        alwaysPresent: ["notes", "oneshot", "mind-map", "flashcards"],
+        publicLesson: {
+          lessonId: null,
+          topicId,
+          title: topic.title,
+          openedIsNotMastery: true,
+          placement: null,
+          mastery: null,
+          quickNotes: [],
+          examples: topic.example.code
+            ? [{ title: "Worked example", problem: topic.example.explanation, steps: [topic.example.explanation], code: topic.example.code, output: topic.example.output }]
+            : [],
+          syntax: topic.syntax ?? null,
+          syntaxRows: topic.concepts.map((concept) => ({ token: concept.term, meaning: concept.definition })),
+          trace: null,
+          predict: null,
+          guided: null,
+          independent: null,
+          checks: [],
+          exerciseId: topic.exerciseIds[0] ?? null,
+          answerKeysIncluded: false,
+        },
+      });
+    },
+    async check() {
+      return { ok: false, error: "demo_unscored" };
+    },
   },
   flashcards: {
     deck: async (id) => { const t = topics.find((x) => x.id === id); return t ? buildFlashcards(t) : []; },
@@ -132,7 +186,7 @@ export const demoServices: CForgeServices = {
   assessments: {
     list: async () => assessments.map(({ questions: _q, key: _k, ...a }) => a),
     async get(id) {
-      const a = assessments.find((x) => x.id === id);
+      const a = assessments.find((x) => x.id === id || x.id === id.replace(/^ta-/, "topic:").replace(/^ua-/, "unit:"));
       if (!a) return null;
       const { key: _k, ...rest } = a; // never hand the key to the page
       return rest;
@@ -143,10 +197,21 @@ export const demoServices: CForgeServices = {
       return { assessmentId: id, correct: perQuestion.filter((p) => p.correct).length, total: a.questions.length, perQuestion, isPreview: true };
     },
   },
-  student: { me: async () => demoStudent },
+  student: {
+    me: async () => demoStudent,
+    async updateProfile(input) {
+      if (input.dateOfBirth !== undefined) demoStudent.dateOfBirth = input.dateOfBirth;
+      if (input.appearance !== undefined) demoStudent.appearance = input.appearance;
+      demoStudent.profileComplete = Boolean(demoStudent.name && demoStudent.dateOfBirth);
+      return demoStudent;
+    },
+  },
   progress: {
     forStudent: async (id) => progressFor(id),
     history: async (id) => progressFor(id).attempts,
+    async recordTeachingEvent() {
+      return;
+    },
   },
   visualizers: { list: async () => TOOL_IDS.map((id) => ({ id, ...TOOL_META[id] })) },
   exercises: {
@@ -154,23 +219,11 @@ export const demoServices: CForgeServices = {
     get: async (id) => exercises.find((e) => e.id === id) ?? null,
   },
   judge: {
-    async run(exerciseId, code, stdin) {
-      const ex = exercises.find((e) => e.id === exerciseId);
-      if (!hasMain(code) || !balanced(code)) {
-        return { mode: "run", verdict: "compile-error", compilerOutput: !hasMain(code) ? "[simulated] error: no definition of 'int main'" : "[simulated] error: unbalanced braces '{' '}'", stdout: "", isSimulated: true };
-      }
-      const sample = ex?.samples.find((s) => s.input.trim() === stdin.trim());
-      return { mode: "run", verdict: "accepted", compilerOutput: "[simulated] compiled with 0 warnings", stdout: sample ? `(sample expected output)\n${sample.output}` : "Program output is unavailable in demo mode — real execution needs the CForge judge.", isSimulated: true };
+    async run() {
+      return { mode: "run" as const, verdict: "unavailable" as const, compilerOutput: "The C judge is not connected in demo mode. No program was compiled or executed.", stdout: "", isSimulated: true };
     },
-    async submit(exerciseId, code) {
-      const ex = exercises.find((e) => e.id === exerciseId);
-      const n = ex?.hiddenTestCount ?? 4;
-      if (!hasMain(code) || !balanced(code)) {
-        return { mode: "submit", verdict: "compile-error", compilerOutput: "[simulated] compilation failed", stdout: "", isSimulated: true };
-      }
-      const touched = code.replace(/\s+/g, "") !== (ex?.starterCode ?? "").replace(/\s+/g, "");
-      const tests = Array.from({ length: n }, (_, i) => ({ name: `Hidden test ${i + 1}`, passed: touched && i < n - 1 }));
-      return { mode: "submit", verdict: tests.every((t) => t.passed) ? "accepted" : "wrong-answer", compilerOutput: "[simulated] compiled with 0 warnings", stdout: "", tests, isSimulated: true };
+    async submit() {
+      return { mode: "submit" as const, verdict: "unavailable" as const, compilerOutput: "The C judge is not connected in demo mode. No program was compiled or executed.", stdout: "", isSimulated: true };
     },
   },
   faculty: {
@@ -226,6 +279,173 @@ export const demoServices: CForgeServices = {
       if (!r) throw new Error("Student not found");
       r.name = name.trim();
       return { ...r };
+    },
+  },
+  onboarding: {
+    async get() {
+      if (typeof window === "undefined") return { startIntent: null, notASkillLabel: true as const };
+      const raw = window.sessionStorage.getItem("cforge.demo.intent");
+      return { startIntent: (raw as StartIntent | null) ?? null, notASkillLabel: true as const };
+    },
+    async save(startIntent) {
+      if (typeof window !== "undefined") window.sessionStorage.setItem("cforge.demo.intent", startIntent);
+      return { startIntent, notASkillLabel: true as const };
+    },
+  },
+  diagnostics: {
+    async list() {
+      return [];
+    },
+    async start() {
+      throw new Error("The Unit 1 diagnostic is not available in demo mode.");
+    },
+    async get() {
+      throw new Error("The Unit 1 diagnostic is not available in demo mode.");
+    },
+    async submit() {
+      throw new Error("The Unit 1 diagnostic is not available in demo mode.");
+    },
+  },
+  placement: {
+    async get() {
+      return { rubricVersion: "2d1-placement-v1", placementIsNotMastery: true as const, topics: [] };
+    },
+  },
+  adaptive: {
+    async dashboard() {
+      const first = topics[0] ?? { id: "demo-topic" };
+      return mapDashboard({
+        greeting: `Welcome, ${demoStudent.name}`,
+        rollIdentifier: demoStudent.rollNumber,
+        displayName: demoStudent.name,
+        startIntent: null,
+        continueLearning: null,
+        recommendedNext: {
+          topicId: first.id,
+          resourceType: "DEEP_LESSON",
+          reason: "Demo recommendation only. This is not the CForge adaptive engine.",
+          href: `/learn/topics/${first.id}`,
+          availability: "AVAILABLE",
+          unmetPrerequisites: [],
+          startIntent: null,
+          placement: "NOT_ASSESSED",
+          mastery: null,
+          readiness: null,
+        },
+        path: units.map((unit) => ({
+          id: unit.id,
+          title: unit.title,
+          topics: topics.filter((topic) => topic.unitId === unit.id).map((topic) => ({
+            id: topic.id,
+            sourceLabel: topic.title,
+            title: topic.title,
+            placement: "NOT_ASSESSED",
+            mastery: null,
+            readiness: null,
+            lesson: "AVAILABLE",
+            notes: "AVAILABLE",
+            laboratory: "UNAVAILABLE",
+            href: `/learn/topics/${topic.id}`,
+            accessible: true,
+            prerequisites: [],
+          })),
+        })),
+        weakConcepts: [],
+        pendingAssessments: [],
+        scoresAreSeparate: true,
+        note: "Demo dashboard. Placement, mastery, and readiness are not one percentage.",
+        analytics: {
+          empty: true,
+          unitProgress: units.map((unit) => ({
+            id: unit.id,
+            title: unit.title,
+            teachingTopics: topics.filter((topic) => topic.unitId === unit.id).length,
+            opened: 0,
+            practised: 0,
+            demonstrated: 0,
+            mastered: 0,
+            note: "Opened is not mastered.",
+          })),
+          recentlyOpened: [],
+          recentlyPractised: [],
+          assessmentHistory: [],
+          needPractice: [],
+          mastered: [],
+          demonstrated: [],
+          unsupported: ["examination readiness", "class rank", "predicted marks", "time-on-task"],
+        },
+      }, "demo");
+    },
+    async path() {
+      const dash = await demoServices.adaptive.dashboard();
+      return { recommendedNext: dash.recommendedNext, units: dash.path, guidanceOnly: true as const, source: "demo" as const };
+    },
+    async next() {
+      const dash = await demoServices.adaptive.dashboard();
+      return dash.recommendedNext;
+    },
+  },
+  foundation: {
+    async library() {
+      return demoFoundationLibrary();
+    },
+    async topic(id) {
+      return findFoundationTopic(demoFoundationLibrary(), id);
+    },
+  },
+  resources: {
+    async labs() {
+      return mapLabCollection({ labs: demoLabs, fabricated: false }, "demo");
+    },
+    async papers() {
+      return mapPaperCollection({ papers: demoPapers, fabricated: false }, "demo");
+    },
+  },
+  facultyResources: {
+    async labs() {
+      return mapLabCollection({ labs: demoLabs, fabricated: false }, "demo");
+    },
+    async addLab(input) {
+      const payload = labIngestPayload(input);
+      if (!payload.ok) throw new Error(payload.error);
+      demoLabs.push({
+        id: `demo-lab-${demoLabs.length + 1}`,
+        unitId: payload.body.unitId,
+        title: payload.body.title,
+        objective: payload.body.objective ?? null,
+        verified: true,
+        sourceRef: payload.body.sourceRef,
+        sourceHref: hrefIfHttp(payload.body.sourceRef),
+        uploadedAt: new Date().toISOString(),
+      });
+      return { stored: true as const, inventedOfficialList: false as const, demo: true };
+    },
+    async papers() {
+      return mapPaperCollection({ papers: demoPapers, fabricated: false }, "demo");
+    },
+    async addPaper(input) {
+      const payload = paperIngestPayload(input);
+      if (!payload.ok) throw new Error(payload.error);
+      demoPapers.push({
+        id: `demo-paper-${demoPapers.length + 1}`,
+        academicYear: payload.body.academicYear,
+        semester: payload.body.semester,
+        examType: payload.body.examType,
+        sourceRef: payload.body.sourceRef,
+        sourceHref: hrefIfHttp(payload.body.sourceRef),
+        verified: true,
+        uploadedAt: new Date().toISOString(),
+        questions: payload.body.questions.map((q, i) => ({
+          id: `demo-q-${demoPapers.length}-${i}`,
+          text: q.text,
+          unitHint: null,
+          topicId: q.topicId ?? null,
+          marks: q.marks ?? null,
+          pageRef: q.pageRef ?? null,
+          kind: "faculty_extracted" as const,
+        })),
+      });
+      return { stored: true as const, trendsInvented: false as const, demo: true };
     },
   },
 };

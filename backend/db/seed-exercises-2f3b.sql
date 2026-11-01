@@ -1,0 +1,58 @@
+-- Additive 2F.3 expansion. Does not rewrite 001–005 or db/seed.sql.
+-- INSERT only. ON CONFLICT leaves existing rows unchanged.
+
+INSERT INTO exercises (id, slug, title, objective, statement, input_format, output_format, constraints_text, starter_code) VALUES
+  ('33333333-3333-4333-8333-333333333011', 'min-of-three-ternary', 'Smallest of three integers', 'Use a conditional expression to print the minimum of three integers.', 'Read three integers a, b, and c. Print the smallest value. If two or three are tied for smallest, print that value once. CForge practice for Unit 1 operators and the conditional (ternary) operator. Not an official laboratory sheet.', 'Three integers a, b, and c.', 'One line: the smallest value and a newline.', '−10000 ≤ a, b, c ≤ 10000. Standard C only.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333012', 'evaluate-with-precedence', 'Evaluate a + b * c', 'Print a + b * c using C operator precedence (multiplication before addition).', 'Read three integers a, b, and c. Print the value of the C expression a + b * c. Do not add parentheses that would change the meaning to (a + b) * c. CForge practice for Unit 2 precedence. Not an official lab.', 'Three integers a, b, and c.', 'One line: a + b * c and a newline.', '−100 ≤ a, b, c ≤ 100.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333013', 'skip-multiples-continue', 'Skip multiples of k', 'Print 1 through n except multiples of k.', 'Read two integers n and k. Print the integers from 1 through n, in order, omitting every value that is a multiple of k. Separate printed numbers with a single space. End with a newline. If every integer is omitted, print only a newline. continue is a natural fit; any correct output is accepted. CForge practice for Unit 2 unconditional statements. Not an official lab.', 'Two integers n and k.', 'Zero or more integers on one line, space-separated, then a newline.', '1 ≤ n ≤ 40. 1 ≤ k ≤ 40.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333014', 'count-digits-while', 'Count digits with a while loop', 'Count how many decimal digits a non-negative integer has.', 'Read one non-negative integer n. Print how many decimal digits it has. 0 has one digit. A while loop that repeatedly divides by 10 is a good fit. CForge practice for Unit 2 while / do-while. Not an official laboratory sheet.', 'One integer n.', 'One line: the digit count and a newline.', '0 ≤ n ≤ 1000000000 (one billion).', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333015', 'matrix-2x2-sum', 'Sum of a 2-by-2 matrix', 'Read four integers as a 2-by-2 matrix and print their sum.', 'Read four integers in row-major order: a11 a12 a21 a22. Treat them as a 2-by-2 matrix and print the sum of all four cells. CForge practice for Unit 3 multi-dimensional arrays. Not an official laboratory experiment.', 'Four integers on one line, or split across lines.', 'One line: the sum and a newline.', 'Each cell is between −1000 and 1000.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333016', 'string-equal-strcmp', 'Compare two words', 'Decide whether two words are equal using a standard string function.', 'Read two words (no spaces). Print equal if they contain the same characters in the same order, otherwise print differ. Comparison is case-sensitive. You may call strcmp from string.h. Do not use strrev; it is not ISO C. CForge practice for Unit 3 string library functions. Not an official lab.', 'Two words, separated by space or newline.', 'One line: equal or differ, then a newline.', 'Each word has length 1 to 32. Letters or digits only.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333017', 'square-return', 'Square with a function', 'Return n times n from a function and print the result.', 'Read one integer n. Print n * n. Write a function that takes n and returns the square; main should print the returned value. The judge checks output only. CForge practice for Unit 4 functions and return. Not an official lab.', 'One integer n.', 'One line: n * n and a newline.', '−100 ≤ n ≤ 100. The square fits in a 32-bit int.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333018', 'array-max-argument', 'Maximum of an array argument', 'Pass an array to a function and print the largest value.', 'The first integer is n. The next n integers are the values. Print the largest value. A function that receives the array (and n) and returns the maximum is the intended shape; the judge checks output only. CForge practice for Unit 4 passing arrays to functions. Not an official laboratory sheet.', 'n, then n integers.', 'One line: the maximum and a newline.', '1 ≤ n ≤ 32. Each value is between −1000 and 1000.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333019', 'binary-search-index', 'Binary search, first index', 'Find the first index of a key in a sorted list, or −1.', 'The first integer is n. Then n integers in non-decreasing order. Then one integer key. Print the first 0-based index where the list equals key. If key is absent, print -1. Binary search is the intended method; any correct first-index output is accepted. CForge practice for Unit 5 binary search. Not an official laboratory sheet and not a contest problem from an external platform.', 'n, then n sorted integers, then key.', 'One line: the first index or -1, and a newline.', '1 ≤ n ≤ 32. Values and key are between −1000 and 1000. The list is sorted non-decreasing.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n'),
+  ('33333333-3333-4333-8333-333333333020', 'bubble-sort-asc', 'Bubble sort ascending', 'Sort n integers into non-decreasing order and print them.', 'The first integer is n. The next n integers are the values. Print the values in non-decreasing order, separated by single spaces, then a newline. Adjacent-swap (bubble) sort is the intended method; any correct sorted line is accepted. CForge practice for Unit 5 bubble sort. Not an official laboratory sheet.', 'n, then n integers.', 'n integers on one line, space-separated, then a newline.', '1 ≤ n ≤ 32. Each value is between −1000 and 1000.', E'#include <stdio.h>\n\nint main(void) {\n    /* Read the input described in the statement, then print the required line. */\n    return 0;\n}\n')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO exercise_tests (exercise_id, ordinal, visibility, stdin, expected_stdout) VALUES
+  ('33333333-3333-4333-8333-333333333011', 1, 'sample', '4 1 9\n', '1\n'),
+  ('33333333-3333-4333-8333-333333333011', 2, 'hidden', '0 0 0\n', '0\n'),
+  ('33333333-3333-4333-8333-333333333011', 3, 'hidden', '-3 -1 -2\n', '-3\n'),
+  ('33333333-3333-4333-8333-333333333011', 4, 'hidden', '5 5 4\n', '4\n'),
+  ('33333333-3333-4333-8333-333333333012', 1, 'sample', '2 3 4\n', '14\n'),
+  ('33333333-3333-4333-8333-333333333012', 2, 'hidden', '0 5 2\n', '10\n'),
+  ('33333333-3333-4333-8333-333333333012', 3, 'hidden', '1 1 1\n', '2\n'),
+  ('33333333-3333-4333-8333-333333333012', 4, 'hidden', '-2 3 5\n', '13\n'),
+  ('33333333-3333-4333-8333-333333333013', 1, 'sample', '6 2\n', '1 3 5\n'),
+  ('33333333-3333-4333-8333-333333333013', 2, 'hidden', '7 3\n', '1 2 4 5 7\n'),
+  ('33333333-3333-4333-8333-333333333013', 3, 'hidden', '5 1\n', '\n'),
+  ('33333333-3333-4333-8333-333333333013', 4, 'hidden', '1 2\n', '1\n'),
+  ('33333333-3333-4333-8333-333333333014', 1, 'sample', '123\n', '3\n'),
+  ('33333333-3333-4333-8333-333333333014', 2, 'hidden', '0\n', '1\n'),
+  ('33333333-3333-4333-8333-333333333014', 3, 'hidden', '7\n', '1\n'),
+  ('33333333-3333-4333-8333-333333333014', 4, 'hidden', '1000000000\n', '10\n'),
+  ('33333333-3333-4333-8333-333333333015', 1, 'sample', '1 2 3 4\n', '10\n'),
+  ('33333333-3333-4333-8333-333333333015', 2, 'hidden', '0 0 0 0\n', '0\n'),
+  ('33333333-3333-4333-8333-333333333015', 3, 'hidden', '-1 1 -1 1\n', '0\n'),
+  ('33333333-3333-4333-8333-333333333015', 4, 'hidden', '10 20 30 40\n', '100\n'),
+  ('33333333-3333-4333-8333-333333333016', 1, 'sample', 'cat cat\n', 'equal\n'),
+  ('33333333-3333-4333-8333-333333333016', 2, 'hidden', 'a b\n', 'differ\n'),
+  ('33333333-3333-4333-8333-333333333016', 3, 'hidden', 'Same same\n', 'differ\n'),
+  ('33333333-3333-4333-8333-333333333016', 4, 'hidden', 'abc ABC\n', 'differ\n'),
+  ('33333333-3333-4333-8333-333333333017', 1, 'sample', '6\n', '36\n'),
+  ('33333333-3333-4333-8333-333333333017', 2, 'hidden', '0\n', '0\n'),
+  ('33333333-3333-4333-8333-333333333017', 3, 'hidden', '-4\n', '16\n'),
+  ('33333333-3333-4333-8333-333333333017', 4, 'hidden', '12\n', '144\n'),
+  ('33333333-3333-4333-8333-333333333018', 1, 'sample', '4\n1 8 3 2\n', '8\n'),
+  ('33333333-3333-4333-8333-333333333018', 2, 'hidden', '1\n-5\n', '-5\n'),
+  ('33333333-3333-4333-8333-333333333018', 3, 'hidden', '3\n-1 -8 -2\n', '-1\n'),
+  ('33333333-3333-4333-8333-333333333018', 4, 'hidden', '5\n0 0 0 0 1\n', '1\n'),
+  ('33333333-3333-4333-8333-333333333019', 1, 'sample', '5\n1 3 5 7 9\n7\n', '3\n'),
+  ('33333333-3333-4333-8333-333333333019', 2, 'hidden', '4\n1 2 3 4\n0\n', '-1\n'),
+  ('33333333-3333-4333-8333-333333333019', 3, 'hidden', '1\n9\n9\n', '0\n'),
+  ('33333333-3333-4333-8333-333333333019', 4, 'hidden', '6\n1 1 1 1 1 2\n2\n', '5\n'),
+  ('33333333-3333-4333-8333-333333333020', 1, 'sample', '5\n3 1 4 1 5\n', '1 1 3 4 5\n'),
+  ('33333333-3333-4333-8333-333333333020', 2, 'hidden', '1\n9\n', '9\n'),
+  ('33333333-3333-4333-8333-333333333020', 3, 'hidden', '4\n0 0 0 0\n', '0 0 0 0\n'),
+  ('33333333-3333-4333-8333-333333333020', 4, 'hidden', '3\n-2 8 -2\n', '-2 -2 8\n')
+ON CONFLICT (exercise_id, ordinal) DO NOTHING;

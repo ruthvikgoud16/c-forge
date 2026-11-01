@@ -17,22 +17,34 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as FacultyIndexRouteImport } from './routes/faculty.index'
 import { Route as FacultyInvitationsRouteImport } from './routes/faculty.invitations'
+import { Route as FacultyLabsRouteImport } from './routes/faculty.labs'
+import { Route as FacultyPapersRouteImport } from './routes/faculty.papers'
 import { Route as FacultyRosterRouteImport } from './routes/faculty.roster'
+import { Route as FacultySettingsRouteImport } from './routes/faculty.settings'
 import { Route as JoinTokenRouteImport } from './routes/join.$token'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
+import { Route as LearnDiagnosticRouteImport } from './routes/learn.diagnostic'
+import { Route as LearnFoundationRouteImport } from './routes/learn.foundation'
+import { Route as LearnLabsRouteImport } from './routes/learn.labs'
+import { Route as LearnOnboardingRouteImport } from './routes/learn.onboarding'
+import { Route as LearnPapersRouteImport } from './routes/learn.papers'
 import { Route as LearnPathRouteImport } from './routes/learn.path'
 import { Route as LearnPracticeRouteImport } from './routes/learn.practice'
+import { Route as LearnProfileRouteImport } from './routes/learn.profile'
 import { Route as LearnProgressRouteImport } from './routes/learn.progress'
 import { Route as LearnRevisionRouteImport } from './routes/learn.revision'
+import { Route as LearnSettingsRouteImport } from './routes/learn.settings'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
 import { Route as StudioExerciseIdRouteImport } from './routes/studio.$exerciseId'
 import { Route as FacultyStudentsStudentIdRouteImport } from './routes/faculty.students.$studentId'
 import { Route as LearnAssessmentsIndexRouteImport } from './routes/learn.assessments.index'
 import { Route as LearnAssessmentsAssessmentIdRouteImport } from './routes/learn.assessments.$assessmentId'
+import { Route as LearnFoundationTopicIdRouteImport } from './routes/learn.foundation.$topicId'
 import { Route as LearnToolsIndexRouteImport } from './routes/learn.tools.index'
 import { Route as LearnToolsToolRouteImport } from './routes/learn.tools.$tool'
 import { Route as LearnUnitsIndexRouteImport } from './routes/learn.units.index'
 import { Route as LearnTopicsTopicIdIndexRouteImport } from './routes/learn.topics.$topicId.index'
+import { Route as LearnTopicsTopicIdKindRouteImport } from './routes/learn.topics.$topicId.$kind'
 import { Route as LearnTopicsTopicIdFlashcardsRouteImport } from './routes/learn.topics.$topicId.flashcards'
 import { Route as LearnTopicsTopicIdLessonRouteImport } from './routes/learn.topics.$topicId.lesson'
 import { Route as LearnTopicsTopicIdMindMapRouteImport } from './routes/learn.topics.$topicId.mind-map'
@@ -81,9 +93,24 @@ const FacultyInvitationsRoute = FacultyInvitationsRouteImport.update({
   path: '/invitations',
   getParentRoute: () => FacultyRoute,
 } as any)
+const FacultyLabsRoute = FacultyLabsRouteImport.update({
+  id: '/labs',
+  path: '/labs',
+  getParentRoute: () => FacultyRoute,
+} as any)
+const FacultyPapersRoute = FacultyPapersRouteImport.update({
+  id: '/papers',
+  path: '/papers',
+  getParentRoute: () => FacultyRoute,
+} as any)
 const FacultyRosterRoute = FacultyRosterRouteImport.update({
   id: '/roster',
   path: '/roster',
+  getParentRoute: () => FacultyRoute,
+} as any)
+const FacultySettingsRoute = FacultySettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => FacultyRoute,
 } as any)
 const JoinTokenRoute = JoinTokenRouteImport.update({
@@ -96,6 +123,31 @@ const LearnIndexRoute = LearnIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LearnRoute,
 } as any)
+const LearnDiagnosticRoute = LearnDiagnosticRouteImport.update({
+  id: '/diagnostic',
+  path: '/diagnostic',
+  getParentRoute: () => LearnRoute,
+} as any)
+const LearnFoundationRoute = LearnFoundationRouteImport.update({
+  id: '/foundation',
+  path: '/foundation',
+  getParentRoute: () => LearnRoute,
+} as any)
+const LearnLabsRoute = LearnLabsRouteImport.update({
+  id: '/labs',
+  path: '/labs',
+  getParentRoute: () => LearnRoute,
+} as any)
+const LearnOnboardingRoute = LearnOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => LearnRoute,
+} as any)
+const LearnPapersRoute = LearnPapersRouteImport.update({
+  id: '/papers',
+  path: '/papers',
+  getParentRoute: () => LearnRoute,
+} as any)
 const LearnPathRoute = LearnPathRouteImport.update({
   id: '/path',
   path: '/path',
@@ -106,6 +158,11 @@ const LearnPracticeRoute = LearnPracticeRouteImport.update({
   path: '/practice',
   getParentRoute: () => LearnRoute,
 } as any)
+const LearnProfileRoute = LearnProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => LearnRoute,
+} as any)
 const LearnProgressRoute = LearnProgressRouteImport.update({
   id: '/progress',
   path: '/progress',
@@ -114,6 +171,11 @@ const LearnProgressRoute = LearnProgressRouteImport.update({
 const LearnRevisionRoute = LearnRevisionRouteImport.update({
   id: '/revision',
   path: '/revision',
+  getParentRoute: () => LearnRoute,
+} as any)
+const LearnSettingsRoute = LearnSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => LearnRoute,
 } as any)
 const StudioIndexRoute = StudioIndexRouteImport.update({
@@ -143,6 +205,11 @@ const LearnAssessmentsAssessmentIdRoute =
     path: '/assessments/$assessmentId',
     getParentRoute: () => LearnRoute,
   } as any)
+const LearnFoundationTopicIdRoute = LearnFoundationTopicIdRouteImport.update({
+  id: '/$topicId',
+  path: '/$topicId',
+  getParentRoute: () => LearnFoundationRoute,
+} as any)
 const LearnToolsIndexRoute = LearnToolsIndexRouteImport.update({
   id: '/tools/',
   path: '/tools/',
@@ -161,6 +228,11 @@ const LearnUnitsIndexRoute = LearnUnitsIndexRouteImport.update({
 const LearnTopicsTopicIdIndexRoute = LearnTopicsTopicIdIndexRouteImport.update({
   id: '/topics/$topicId/',
   path: '/topics/$topicId/',
+  getParentRoute: () => LearnRoute,
+} as any)
+const LearnTopicsTopicIdKindRoute = LearnTopicsTopicIdKindRouteImport.update({
+  id: '/topics/$topicId/$kind',
+  path: '/topics/$topicId/$kind',
   getParentRoute: () => LearnRoute,
 } as any)
 const LearnTopicsTopicIdFlashcardsRoute =
@@ -211,22 +283,34 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/studio': typeof StudioRouteWithChildren
   '/faculty/invitations': typeof FacultyInvitationsRoute
+  '/faculty/labs': typeof FacultyLabsRoute
+  '/faculty/papers': typeof FacultyPapersRoute
   '/faculty/roster': typeof FacultyRosterRoute
+  '/faculty/settings': typeof FacultySettingsRoute
   '/join/$token': typeof JoinTokenRoute
+  '/learn/diagnostic': typeof LearnDiagnosticRoute
+  '/learn/foundation': typeof LearnFoundationRouteWithChildren
+  '/learn/labs': typeof LearnLabsRoute
+  '/learn/onboarding': typeof LearnOnboardingRoute
+  '/learn/papers': typeof LearnPapersRoute
   '/learn/path': typeof LearnPathRoute
   '/learn/practice': typeof LearnPracticeRoute
+  '/learn/profile': typeof LearnProfileRoute
   '/learn/progress': typeof LearnProgressRoute
   '/learn/revision': typeof LearnRevisionRoute
+  '/learn/settings': typeof LearnSettingsRoute
   '/studio/$exerciseId': typeof StudioExerciseIdRoute
   '/faculty/': typeof FacultyIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/studio/': typeof StudioIndexRoute
   '/faculty/students/$studentId': typeof FacultyStudentsStudentIdRoute
   '/learn/assessments/$assessmentId': typeof LearnAssessmentsAssessmentIdRoute
+  '/learn/foundation/$topicId': typeof LearnFoundationTopicIdRoute
   '/learn/tools/$tool': typeof LearnToolsToolRoute
   '/learn/assessments/': typeof LearnAssessmentsIndexRoute
   '/learn/tools/': typeof LearnToolsIndexRoute
   '/learn/units/': typeof LearnUnitsIndexRoute
+  '/learn/topics/$topicId/$kind': typeof LearnTopicsTopicIdKindRoute
   '/learn/topics/$topicId/flashcards': typeof LearnTopicsTopicIdFlashcardsRoute
   '/learn/topics/$topicId/lesson': typeof LearnTopicsTopicIdLessonRoute
   '/learn/topics/$topicId/mind-map': typeof LearnTopicsTopicIdMindMapRoute
@@ -241,22 +325,34 @@ export interface FileRoutesByTo {
   '/faculty-login': typeof FacultyLoginRoute
   '/login': typeof LoginRoute
   '/faculty/invitations': typeof FacultyInvitationsRoute
+  '/faculty/labs': typeof FacultyLabsRoute
+  '/faculty/papers': typeof FacultyPapersRoute
   '/faculty/roster': typeof FacultyRosterRoute
+  '/faculty/settings': typeof FacultySettingsRoute
   '/join/$token': typeof JoinTokenRoute
+  '/learn/diagnostic': typeof LearnDiagnosticRoute
+  '/learn/foundation': typeof LearnFoundationRouteWithChildren
+  '/learn/labs': typeof LearnLabsRoute
+  '/learn/onboarding': typeof LearnOnboardingRoute
+  '/learn/papers': typeof LearnPapersRoute
   '/learn/path': typeof LearnPathRoute
   '/learn/practice': typeof LearnPracticeRoute
+  '/learn/profile': typeof LearnProfileRoute
   '/learn/progress': typeof LearnProgressRoute
   '/learn/revision': typeof LearnRevisionRoute
+  '/learn/settings': typeof LearnSettingsRoute
   '/studio/$exerciseId': typeof StudioExerciseIdRoute
   '/faculty': typeof FacultyIndexRoute
   '/learn': typeof LearnIndexRoute
   '/studio': typeof StudioIndexRoute
   '/faculty/students/$studentId': typeof FacultyStudentsStudentIdRoute
   '/learn/assessments/$assessmentId': typeof LearnAssessmentsAssessmentIdRoute
+  '/learn/foundation/$topicId': typeof LearnFoundationTopicIdRoute
   '/learn/tools/$tool': typeof LearnToolsToolRoute
   '/learn/assessments': typeof LearnAssessmentsIndexRoute
   '/learn/tools': typeof LearnToolsIndexRoute
   '/learn/units': typeof LearnUnitsIndexRoute
+  '/learn/topics/$topicId/$kind': typeof LearnTopicsTopicIdKindRoute
   '/learn/topics/$topicId/flashcards': typeof LearnTopicsTopicIdFlashcardsRoute
   '/learn/topics/$topicId/lesson': typeof LearnTopicsTopicIdLessonRoute
   '/learn/topics/$topicId/mind-map': typeof LearnTopicsTopicIdMindMapRoute
@@ -275,22 +371,34 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/studio': typeof StudioRouteWithChildren
   '/faculty/invitations': typeof FacultyInvitationsRoute
+  '/faculty/labs': typeof FacultyLabsRoute
+  '/faculty/papers': typeof FacultyPapersRoute
   '/faculty/roster': typeof FacultyRosterRoute
+  '/faculty/settings': typeof FacultySettingsRoute
   '/join/$token': typeof JoinTokenRoute
+  '/learn/diagnostic': typeof LearnDiagnosticRoute
+  '/learn/foundation': typeof LearnFoundationRouteWithChildren
+  '/learn/labs': typeof LearnLabsRoute
+  '/learn/onboarding': typeof LearnOnboardingRoute
+  '/learn/papers': typeof LearnPapersRoute
   '/learn/path': typeof LearnPathRoute
   '/learn/practice': typeof LearnPracticeRoute
+  '/learn/profile': typeof LearnProfileRoute
   '/learn/progress': typeof LearnProgressRoute
   '/learn/revision': typeof LearnRevisionRoute
+  '/learn/settings': typeof LearnSettingsRoute
   '/studio/$exerciseId': typeof StudioExerciseIdRoute
   '/faculty/': typeof FacultyIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/studio/': typeof StudioIndexRoute
   '/faculty/students/$studentId': typeof FacultyStudentsStudentIdRoute
   '/learn/assessments/$assessmentId': typeof LearnAssessmentsAssessmentIdRoute
+  '/learn/foundation/$topicId': typeof LearnFoundationTopicIdRoute
   '/learn/tools/$tool': typeof LearnToolsToolRoute
   '/learn/assessments/': typeof LearnAssessmentsIndexRoute
   '/learn/tools/': typeof LearnToolsIndexRoute
   '/learn/units/': typeof LearnUnitsIndexRoute
+  '/learn/topics/$topicId/$kind': typeof LearnTopicsTopicIdKindRoute
   '/learn/topics/$topicId/flashcards': typeof LearnTopicsTopicIdFlashcardsRoute
   '/learn/topics/$topicId/lesson': typeof LearnTopicsTopicIdLessonRoute
   '/learn/topics/$topicId/mind-map': typeof LearnTopicsTopicIdMindMapRoute
@@ -310,22 +418,34 @@ export interface FileRouteTypes {
     | '/login'
     | '/studio'
     | '/faculty/invitations'
+    | '/faculty/labs'
+    | '/faculty/papers'
     | '/faculty/roster'
+    | '/faculty/settings'
     | '/join/$token'
+    | '/learn/diagnostic'
+    | '/learn/foundation'
+    | '/learn/labs'
+    | '/learn/onboarding'
+    | '/learn/papers'
     | '/learn/path'
     | '/learn/practice'
+    | '/learn/profile'
     | '/learn/progress'
     | '/learn/revision'
+    | '/learn/settings'
     | '/studio/$exerciseId'
     | '/faculty/'
     | '/learn/'
     | '/studio/'
     | '/faculty/students/$studentId'
     | '/learn/assessments/$assessmentId'
+    | '/learn/foundation/$topicId'
     | '/learn/tools/$tool'
     | '/learn/assessments/'
     | '/learn/tools/'
     | '/learn/units/'
+    | '/learn/topics/$topicId/$kind'
     | '/learn/topics/$topicId/flashcards'
     | '/learn/topics/$topicId/lesson'
     | '/learn/topics/$topicId/mind-map'
@@ -340,22 +460,34 @@ export interface FileRouteTypes {
     | '/faculty-login'
     | '/login'
     | '/faculty/invitations'
+    | '/faculty/labs'
+    | '/faculty/papers'
     | '/faculty/roster'
+    | '/faculty/settings'
     | '/join/$token'
+    | '/learn/diagnostic'
+    | '/learn/foundation'
+    | '/learn/labs'
+    | '/learn/onboarding'
+    | '/learn/papers'
     | '/learn/path'
     | '/learn/practice'
+    | '/learn/profile'
     | '/learn/progress'
     | '/learn/revision'
+    | '/learn/settings'
     | '/studio/$exerciseId'
     | '/faculty'
     | '/learn'
     | '/studio'
     | '/faculty/students/$studentId'
     | '/learn/assessments/$assessmentId'
+    | '/learn/foundation/$topicId'
     | '/learn/tools/$tool'
     | '/learn/assessments'
     | '/learn/tools'
     | '/learn/units'
+    | '/learn/topics/$topicId/$kind'
     | '/learn/topics/$topicId/flashcards'
     | '/learn/topics/$topicId/lesson'
     | '/learn/topics/$topicId/mind-map'
@@ -373,22 +505,34 @@ export interface FileRouteTypes {
     | '/login'
     | '/studio'
     | '/faculty/invitations'
+    | '/faculty/labs'
+    | '/faculty/papers'
     | '/faculty/roster'
+    | '/faculty/settings'
     | '/join/$token'
+    | '/learn/diagnostic'
+    | '/learn/foundation'
+    | '/learn/labs'
+    | '/learn/onboarding'
+    | '/learn/papers'
     | '/learn/path'
     | '/learn/practice'
+    | '/learn/profile'
     | '/learn/progress'
     | '/learn/revision'
+    | '/learn/settings'
     | '/studio/$exerciseId'
     | '/faculty/'
     | '/learn/'
     | '/studio/'
     | '/faculty/students/$studentId'
     | '/learn/assessments/$assessmentId'
+    | '/learn/foundation/$topicId'
     | '/learn/tools/$tool'
     | '/learn/assessments/'
     | '/learn/tools/'
     | '/learn/units/'
+    | '/learn/topics/$topicId/$kind'
     | '/learn/topics/$topicId/flashcards'
     | '/learn/topics/$topicId/lesson'
     | '/learn/topics/$topicId/mind-map'
@@ -467,11 +611,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FacultyInvitationsRouteImport
       parentRoute: typeof FacultyRoute
     }
+    '/faculty/labs': {
+      id: '/faculty/labs'
+      path: '/labs'
+      fullPath: '/faculty/labs'
+      preLoaderRoute: typeof FacultyLabsRouteImport
+      parentRoute: typeof FacultyRoute
+    }
+    '/faculty/papers': {
+      id: '/faculty/papers'
+      path: '/papers'
+      fullPath: '/faculty/papers'
+      preLoaderRoute: typeof FacultyPapersRouteImport
+      parentRoute: typeof FacultyRoute
+    }
     '/faculty/roster': {
       id: '/faculty/roster'
       path: '/roster'
       fullPath: '/faculty/roster'
       preLoaderRoute: typeof FacultyRosterRouteImport
+      parentRoute: typeof FacultyRoute
+    }
+    '/faculty/settings': {
+      id: '/faculty/settings'
+      path: '/settings'
+      fullPath: '/faculty/settings'
+      preLoaderRoute: typeof FacultySettingsRouteImport
       parentRoute: typeof FacultyRoute
     }
     '/join/$token': {
@@ -488,6 +653,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnIndexRouteImport
       parentRoute: typeof LearnRoute
     }
+    '/learn/diagnostic': {
+      id: '/learn/diagnostic'
+      path: '/diagnostic'
+      fullPath: '/learn/diagnostic'
+      preLoaderRoute: typeof LearnDiagnosticRouteImport
+      parentRoute: typeof LearnRoute
+    }
+    '/learn/foundation': {
+      id: '/learn/foundation'
+      path: '/foundation'
+      fullPath: '/learn/foundation'
+      preLoaderRoute: typeof LearnFoundationRouteImport
+      parentRoute: typeof LearnRoute
+    }
+    '/learn/labs': {
+      id: '/learn/labs'
+      path: '/labs'
+      fullPath: '/learn/labs'
+      preLoaderRoute: typeof LearnLabsRouteImport
+      parentRoute: typeof LearnRoute
+    }
+    '/learn/onboarding': {
+      id: '/learn/onboarding'
+      path: '/onboarding'
+      fullPath: '/learn/onboarding'
+      preLoaderRoute: typeof LearnOnboardingRouteImport
+      parentRoute: typeof LearnRoute
+    }
+    '/learn/papers': {
+      id: '/learn/papers'
+      path: '/papers'
+      fullPath: '/learn/papers'
+      preLoaderRoute: typeof LearnPapersRouteImport
+      parentRoute: typeof LearnRoute
+    }
     '/learn/path': {
       id: '/learn/path'
       path: '/path'
@@ -502,6 +702,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnPracticeRouteImport
       parentRoute: typeof LearnRoute
     }
+    '/learn/profile': {
+      id: '/learn/profile'
+      path: '/profile'
+      fullPath: '/learn/profile'
+      preLoaderRoute: typeof LearnProfileRouteImport
+      parentRoute: typeof LearnRoute
+    }
     '/learn/progress': {
       id: '/learn/progress'
       path: '/progress'
@@ -514,6 +721,13 @@ declare module '@tanstack/react-router' {
       path: '/revision'
       fullPath: '/learn/revision'
       preLoaderRoute: typeof LearnRevisionRouteImport
+      parentRoute: typeof LearnRoute
+    }
+    '/learn/settings': {
+      id: '/learn/settings'
+      path: '/settings'
+      fullPath: '/learn/settings'
+      preLoaderRoute: typeof LearnSettingsRouteImport
       parentRoute: typeof LearnRoute
     }
     '/studio/': {
@@ -551,6 +765,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnAssessmentsAssessmentIdRouteImport
       parentRoute: typeof LearnRoute
     }
+    '/learn/foundation/$topicId': {
+      id: '/learn/foundation/$topicId'
+      path: '/$topicId'
+      fullPath: '/learn/foundation/$topicId'
+      preLoaderRoute: typeof LearnFoundationTopicIdRouteImport
+      parentRoute: typeof LearnFoundationRoute
+    }
     '/learn/tools/': {
       id: '/learn/tools/'
       path: '/tools'
@@ -577,6 +798,13 @@ declare module '@tanstack/react-router' {
       path: '/topics/$topicId'
       fullPath: '/learn/topics/$topicId/'
       preLoaderRoute: typeof LearnTopicsTopicIdIndexRouteImport
+      parentRoute: typeof LearnRoute
+    }
+    '/learn/topics/$topicId/$kind': {
+      id: '/learn/topics/$topicId/$kind'
+      path: '/topics/$topicId/$kind'
+      fullPath: '/learn/topics/$topicId/$kind'
+      preLoaderRoute: typeof LearnTopicsTopicIdKindRouteImport
       parentRoute: typeof LearnRoute
     }
     '/learn/topics/$topicId/flashcards': {
@@ -633,14 +861,20 @@ declare module '@tanstack/react-router' {
 
 interface FacultyRouteChildren {
   FacultyInvitationsRoute: typeof FacultyInvitationsRoute
+  FacultyLabsRoute: typeof FacultyLabsRoute
+  FacultyPapersRoute: typeof FacultyPapersRoute
   FacultyRosterRoute: typeof FacultyRosterRoute
+  FacultySettingsRoute: typeof FacultySettingsRoute
   FacultyIndexRoute: typeof FacultyIndexRoute
   FacultyStudentsStudentIdRoute: typeof FacultyStudentsStudentIdRoute
 }
 
 const FacultyRouteChildren: FacultyRouteChildren = {
   FacultyInvitationsRoute: FacultyInvitationsRoute,
+  FacultyLabsRoute: FacultyLabsRoute,
+  FacultyPapersRoute: FacultyPapersRoute,
   FacultyRosterRoute: FacultyRosterRoute,
+  FacultySettingsRoute: FacultySettingsRoute,
   FacultyIndexRoute: FacultyIndexRoute,
   FacultyStudentsStudentIdRoute: FacultyStudentsStudentIdRoute,
 }
@@ -648,17 +882,37 @@ const FacultyRouteChildren: FacultyRouteChildren = {
 const FacultyRouteWithChildren =
   FacultyRoute._addFileChildren(FacultyRouteChildren)
 
+interface LearnFoundationRouteChildren {
+  LearnFoundationTopicIdRoute: typeof LearnFoundationTopicIdRoute
+}
+
+const LearnFoundationRouteChildren: LearnFoundationRouteChildren = {
+  LearnFoundationTopicIdRoute: LearnFoundationTopicIdRoute,
+}
+
+const LearnFoundationRouteWithChildren = LearnFoundationRoute._addFileChildren(
+  LearnFoundationRouteChildren,
+)
+
 interface LearnRouteChildren {
+  LearnDiagnosticRoute: typeof LearnDiagnosticRoute
+  LearnFoundationRoute: typeof LearnFoundationRouteWithChildren
+  LearnLabsRoute: typeof LearnLabsRoute
+  LearnOnboardingRoute: typeof LearnOnboardingRoute
+  LearnPapersRoute: typeof LearnPapersRoute
   LearnPathRoute: typeof LearnPathRoute
   LearnPracticeRoute: typeof LearnPracticeRoute
+  LearnProfileRoute: typeof LearnProfileRoute
   LearnProgressRoute: typeof LearnProgressRoute
   LearnRevisionRoute: typeof LearnRevisionRoute
+  LearnSettingsRoute: typeof LearnSettingsRoute
   LearnIndexRoute: typeof LearnIndexRoute
   LearnAssessmentsAssessmentIdRoute: typeof LearnAssessmentsAssessmentIdRoute
   LearnToolsToolRoute: typeof LearnToolsToolRoute
   LearnAssessmentsIndexRoute: typeof LearnAssessmentsIndexRoute
   LearnToolsIndexRoute: typeof LearnToolsIndexRoute
   LearnUnitsIndexRoute: typeof LearnUnitsIndexRoute
+  LearnTopicsTopicIdKindRoute: typeof LearnTopicsTopicIdKindRoute
   LearnTopicsTopicIdFlashcardsRoute: typeof LearnTopicsTopicIdFlashcardsRoute
   LearnTopicsTopicIdLessonRoute: typeof LearnTopicsTopicIdLessonRoute
   LearnTopicsTopicIdMindMapRoute: typeof LearnTopicsTopicIdMindMapRoute
@@ -670,16 +924,24 @@ interface LearnRouteChildren {
 }
 
 const LearnRouteChildren: LearnRouteChildren = {
+  LearnDiagnosticRoute: LearnDiagnosticRoute,
+  LearnFoundationRoute: LearnFoundationRouteWithChildren,
+  LearnLabsRoute: LearnLabsRoute,
+  LearnOnboardingRoute: LearnOnboardingRoute,
+  LearnPapersRoute: LearnPapersRoute,
   LearnPathRoute: LearnPathRoute,
   LearnPracticeRoute: LearnPracticeRoute,
+  LearnProfileRoute: LearnProfileRoute,
   LearnProgressRoute: LearnProgressRoute,
   LearnRevisionRoute: LearnRevisionRoute,
+  LearnSettingsRoute: LearnSettingsRoute,
   LearnIndexRoute: LearnIndexRoute,
   LearnAssessmentsAssessmentIdRoute: LearnAssessmentsAssessmentIdRoute,
   LearnToolsToolRoute: LearnToolsToolRoute,
   LearnAssessmentsIndexRoute: LearnAssessmentsIndexRoute,
   LearnToolsIndexRoute: LearnToolsIndexRoute,
   LearnUnitsIndexRoute: LearnUnitsIndexRoute,
+  LearnTopicsTopicIdKindRoute: LearnTopicsTopicIdKindRoute,
   LearnTopicsTopicIdFlashcardsRoute: LearnTopicsTopicIdFlashcardsRoute,
   LearnTopicsTopicIdLessonRoute: LearnTopicsTopicIdLessonRoute,
   LearnTopicsTopicIdMindMapRoute: LearnTopicsTopicIdMindMapRoute,

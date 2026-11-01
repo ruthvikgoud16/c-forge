@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { BookOpen, Check, Eye, Hammer, ListChecks, MailPlus, KeyRound, Rocket, UserPlus, X } from "lucide-react";
-import { units, topics } from "@/data/fixtures/curriculum";
 import { TOOL_IDS, TOOL_META } from "@/data/tools";
+import type { Topic, Unit } from "@/domain/types";
+
+export type HomeCatalog = { units: Unit[]; topics: Topic[]; packageCount: number; visualiserCount: number };
 import { highlightC } from "@/components/common/CodeBlock";
 import { UnitArt, UNIT_STYLE, unitGradient } from "@/components/art/UnitArt";
 import { ToolPreview } from "@/components/art/ToolPreview";
@@ -51,7 +53,8 @@ export function Approach() {
   );
 }
 
-export function CurriculumShowcase() {
+export function CurriculumShowcase({ catalog }: { catalog: HomeCatalog }) {
+  const { units, topics, packageCount } = catalog;
   const [sel, setSel] = useState(0);
   const u = units[sel]!;
   const ts = topics.filter((t) => t.unitId === u.id);
@@ -87,12 +90,13 @@ export function CurriculumShowcase() {
           </div>
         </div>
       </div>
-      <p className="mt-6 text-sm text-muted-foreground">Plus a supplementary competitive-programming package — 31 teaching packages in total.</p>
+      <p className="mt-6 text-sm text-muted-foreground">{packageCount} teaching packages across the five official units. Foundation material is separate and is not a sixth unit.</p>
     </section>
   );
 }
 
-export function MindMapSection() {
+export function MindMapSection({ catalog }: { catalog: HomeCatalog }) {
+  const { units, topics } = catalog;
   const u = units[2]!;
   return (
     <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 md:px-6 lg:grid-cols-[1fr_1.5fr]">
@@ -124,13 +128,17 @@ export function VisualiserBento() {
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {TOOL_IDS.map((id, i) => (
             <Reveal key={id} delay={(i % 4) * 90} className={cn(big.has(id) && "lg:col-span-2")}>
-              <Link to="/learn/tools/$tool" params={{ tool: id }} className="lift glass-panel group flex h-full flex-col rounded-3xl p-4" data-testid={`visualiser-card-${id}`}>
+              <article className="lift glass-panel group flex h-full flex-col rounded-3xl p-4" data-testid={`visualiser-card-${id}`}>
                 <ToolPreview id={id} ms={900 + i * 120} className="min-h-32" />
                 <div className="mt-4 flex items-start gap-3">
                   <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-copper/10 font-mono text-sm text-copper transition-transform group-hover:rotate-6">{TOOL_META[id].glyph}</span>
-                  <div><h3 className="font-semibold">{TOOL_META[id].name}</h3><p className="text-sm text-muted-foreground">{TOOL_META[id].blurb}</p></div>
+                  <div>
+                    <h3 className="font-semibold">{TOOL_META[id].name}</h3>
+                    <p className="text-sm text-muted-foreground">{TOOL_META[id].blurb}</p>
+                    <Link to="/login" className="mt-2 inline-block text-xs text-copper hover:underline">Sign in to use this tool</Link>
+                  </div>
                 </div>
-              </Link>
+              </article>
             </Reveal>
           ))}
         </div>
@@ -179,7 +187,7 @@ export function StudioShowcase() {
         <p className="eyebrow mb-3">Coding practice</p>
         <h2 className="font-display text-4xl leading-tight">A focused studio for writing real C.</h2>
         <p className="mt-4 text-muted-foreground">Read the problem, write your solution, run it against sample input and submit to hidden tests. Compiler feedback and test results appear right beside your code.</p>
-        <p className="mt-4 inline-flex rounded-full bg-warning/15 px-3 py-1 text-xs">Execution is simulated until the secure CForge judge is connected.</p>
+        <p className="mt-4 inline-flex rounded-full bg-warning/15 px-3 py-1 text-xs">Run and submit use the secure judge. If it is off, the studio says so instead of inventing a result.</p>
       </Reveal>
     </section>
   );
@@ -198,7 +206,7 @@ export function AssessmentShowcase() {
           <p className="mt-4 text-muted-foreground">Topic and unit assessments mix single-choice, true/false and predict-the-output questions. After each attempt you see which answers were right, and which topics to revise.</p>
           <div className="mt-8 flex items-center gap-6">
             <Ring value={phase >= 4 ? 8 : 0} max={10} size={110} color="var(--color-ember)" track="oklch(1 0 0 / .12)"><span className="font-display text-2xl">{phase >= 4 ? "8/10" : "–"}</span></Ring>
-            <p className="max-w-48 text-sm text-muted-foreground">Results are shown question by question, with the correct answer.</p>
+            <p className="max-w-48 text-sm text-muted-foreground">Results are shown question by question. Expected answers stay on the server.</p>
           </div>
         </Reveal>
         <Reveal delay={150} className="rounded-3xl border border-white/15 bg-white/5 p-6 backdrop-blur">
@@ -222,14 +230,15 @@ export function AssessmentShowcase() {
   );
 }
 
-export function ProgressShowcase() {
+export function ProgressShowcase({ catalog }: { catalog: HomeCatalog }) {
+  const { units, packageCount } = catalog;
   const sample = [["unit-1", 8, 10], ["unit-2", 4, 6], ["unit-3", 2, 5], ["unit-4", 1, 6], ["unit-5", 0, 3]] as const;
   return (
     <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-24 md:px-6 lg:grid-cols-[1.2fr_1fr]">
       <Reveal className="glass-panel rounded-3xl p-6">
         <div className="flex items-center justify-between"><p className="eyebrow">Your progress</p><span className="rounded-full bg-warning/15 px-2 py-0.5 text-[10px]">Example data</span></div>
         <div className="mt-5 grid items-center gap-6 sm:grid-cols-[auto_1fr]">
-          <Ring value={15} max={31} size={140} stroke={14}><span><span className="block font-display text-3xl">15</span><span className="text-[10px] text-muted-foreground">of 31 packages</span></span></Ring>
+          <Ring value={15} max={packageCount} size={140} stroke={14}><span><span className="block font-display text-3xl">15</span><span className="text-[10px] text-muted-foreground">of {packageCount} packages</span></span></Ring>
           <ul className="space-y-3">
             {sample.map(([id, d, n]) => (
               <li key={id}>
@@ -249,7 +258,8 @@ export function ProgressShowcase() {
   );
 }
 
-export function CohortFlow() {
+export function CohortFlow({ catalog }: { catalog: HomeCatalog }) {
+  const { units } = catalog;
   const steps = [
     { I: UserPlus, t: "Faculty adds you", d: "Your roll number is placed on the approved roster." },
     { I: MailPlus, t: "You get an invitation", d: "A personal link, bound to your roll number." },

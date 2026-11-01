@@ -1,29 +1,12 @@
-# Welcome to your Lovable project
+# CForge
 
-This project was built with [Lovable](https://lovable.dev).
+Private C programming academy. One GitHub repository, two deploy roots.
 
-## Build with Lovable
+- **Public UI (Vercel):** this directory. Project name `cforge`. Intended default domain `https://cforge.vercel.app`. Student login stays `/login`. Faculty login stays `/faculty-login`. `https://cforge.vercel.com` needs separate ownership and DNS verification.
+- **API (Render):** `backend/`. Root Directory `backend`. Judge stays disabled in production.
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Browser calls stay same-origin (`/api`). SSR and the production proxy use server-only `CFORGE_API_ORIGIN`.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+Core API documents live in `backend/`: `README.md`, `PRD.md`, `ARCHITECTURE.md`, `API_CONTRACT.md`, `SCHEMA.md`.
 
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+Do not commit `.env.local`, faculty tokens, or `db/cforge_verified_roster_2026-10-31.csv`.

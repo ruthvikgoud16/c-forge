@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Logo } from "@/components/common/bits";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { highlightC } from "@/components/common/CodeBlock";
+import { SignedInRedirect } from "@/components/auth/SignedInRedirect";
+import { IS_DEMO } from "@/services";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -20,6 +22,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   return (
     <div className="theme-public grid min-h-screen md:grid-cols-2">
+      <SignedInRedirect />
       <aside className="surface-ink relative hidden flex-col justify-between p-10 md:flex">
         <Link to="/"><Logo /></Link>
         <div>
@@ -36,7 +39,7 @@ function LoginPage() {
           <p className="mb-8 mt-2 text-sm text-muted-foreground">Sign in with your roll number. New here? Use the invitation link from your faculty.</p>
           <LoginForm role="student" />
           <p className="mt-6 text-sm text-muted-foreground">Faculty member? <Link to="/faculty-login" className="text-copper underline-offset-4 hover:underline">Faculty access</Link></p>
-          <p className="mt-2 text-sm text-muted-foreground">Have an invitation? Try <Link to="/join/$token" params={{ token: "demo-DEMO-040" }} className="text-copper underline-offset-4 hover:underline">a demo invitation</Link>.</p>
+          {IS_DEMO && <p className="mt-2 text-sm text-muted-foreground">Have an invitation? Try <Link to="/join/$token" params={{ token: "demo-DEMO-040" }} search={{ roll: "DEMO-040" }} className="text-copper underline-offset-4 hover:underline">a demo invitation</Link>.</p>}
         </div>
       </main>
     </div>

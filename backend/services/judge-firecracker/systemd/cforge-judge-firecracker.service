@@ -1,0 +1,29 @@
+[Unit]
+Description=CForge Firecracker judge (private loopback)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/cforge
+Environment=JUDGE_BIND=127.0.0.1
+Environment=JUDGE_PORT=7081
+Environment=CFORGE_FC_ROOT=/var/lib/cforge/firecracker
+Environment=CFORGE_FC_JAIL=/var/lib/cforge/fc-jail
+Environment=NODE_ENV=production
+EnvironmentFile=-/etc/cforge/judge-firecracker.env
+ExecStartPre=/opt/cforge/services/judge-firecracker/scripts/recover-stale.sh
+ExecStart=/usr/bin/node /opt/cforge/services/judge-firecracker/src/server.mjs
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/cforge /run/cforge-fc /sys/fs/cgroup/cforge-jobs
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID CAP_SYS_ADMIN
+AmbientCapabilities=
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,274 @@
+/*
+ * CForge design tokens.
+ * Primitive scales live on :root. Semantic colour, surface and elevation tokens are
+ * defined per theme and only take effect inside an element with a matching
+ * [data-theme]. Unthemed routes (home, login, join) use the neutral base below.
+ * Breakpoints cannot be CSS variables inside media queries; they are 640 / 960 / 1280
+ * and mirrored in lib/ui/tokens.ts.
+ */
+
+:root {
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 0.9375rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-display: clamp(1.75rem, 4.5vw, 2.625rem);
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.55;
+  --tracking-tight: -0.015em;
+  --tracking-wide: 0.08em;
+
+  /* Spacing (4px base) */
+  --space-0: 0;
+  --space-1: 0.125rem;
+  --space-2: 0.25rem;
+  --space-3: 0.5rem;
+  --space-4: 0.75rem;
+  --space-5: 1rem;
+  --space-6: 1.25rem;
+  --space-7: 1.5rem;
+  --space-8: 2rem;
+  --space-9: 2.5rem;
+  --space-10: 3rem;
+  --space-12: 4rem;
+
+  /* Layout */
+  --container-sm: 40rem;
+  --container-md: 61.25rem;
+  --container-lg: 70rem;
+  --container-xl: 80rem;
+  --gutter: var(--space-5);
+  --nav-height: 3.5rem;
+  --control-height-sm: 2rem;
+  --control-height-md: 2.5rem;
+  --control-height-lg: 2.875rem;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+
+  /* Blur scale (kept small; glass is used selectively) */
+  --blur-none: 0px;
+  --blur-sm: 8px;
+  --blur-md: 14px;
+  --blur-lg: 20px;
+
+  /* Motion */
+  --duration-instant: 0ms;
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 260ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1.2);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Stacking */
+  --z-base: 0;
+  --z-sticky: 20;
+  --z-dropdown: 40;
+  --z-overlay: 50;
+  --z-dialog: 60;
+  --z-toast: 80;
+
+  /* Focus */
+  --focus-width: 2px;
+  --focus-offset: 2px;
+
+  /* Public routes — warm branded neutral, not the student theme */
+  --color-scheme: light;
+  --color-bg: #efe4d4;
+  --bg-image: linear-gradient(180deg, #f7f1e6 0%, #efe4d4 58%, #e6d8c4 100%);
+  --color-surface: #f8f3ea;
+  --color-surface-glass: #fbf7f0;
+  --color-surface-raised: #fffaf3;
+  --color-surface-sunken: #e4d9c8;
+  --color-surface-hover: #f3ece1;
+  --color-border: #d9cdb8;
+  --color-border-strong: #c3b39a;
+  --color-text: #221e1a;
+  --color-text-muted: #534c43;
+  --color-text-subtle: #645c52;
+  --color-text-inverse: #f8f3ea;
+  --color-link: #3e4a40;
+  --color-accent: #3c342c;
+  --color-accent-hover: #2a241e;
+  --color-accent-contrast: #f8f3ea;
+  --color-accent-soft: #e7dfd2;
+  --color-accent-2: #6e5a3e;
+  --color-success: #2f6b3a;
+  --color-success-soft: #e3efe4;
+  --color-warning: #85560a;
+  --color-warning-soft: #f6ecd9;
+  --color-danger: #a3243b;
+  --color-danger-soft: #f6e3e6;
+  --color-info: #35566e;
+  --color-info-soft: #e2ebf1;
+  --color-focus-ring: #2b3440;
+  --color-overlay: rgba(20, 22, 26, 0.42);
+  --color-code-bg: #eeece8;
+  --color-code-text: #1c1f23;
+  --glass-blur: var(--blur-none);
+  --glass-saturate: 100%;
+  --shadow-sm: 0 1px 2px rgba(20, 22, 26, 0.06);
+  --shadow-md: 0 4px 14px rgba(20, 22, 26, 0.08);
+  --shadow-lg: 0 18px 40px rgba(20, 22, 26, 0.14);
+  --elevation-0: none;
+  --elevation-1: var(--shadow-sm);
+  --elevation-2: var(--shadow-md);
+  --elevation-3: var(--shadow-lg);
+}
+
+/* Student — warm ivory, pearl cards, sage accent */
+[data-theme="student"] {
+  --color-scheme: light;
+  --color-bg: #e7dfd2;
+  --bg-image: none;
+  --color-surface: #f6f1e7;
+  --color-surface-glass: rgba(246, 241, 231, 0.84);
+  --color-surface-raised: #fbf7f0;
+  --color-surface-sunken: #ddd3c2;
+  --color-surface-hover: #efe7d8;
+  --color-border: #d4c8b4;
+  --color-border-strong: #b9aa92;
+  --color-text: #1f1b17;
+  --color-text-muted: #4a433b;
+  --color-text-subtle: #5c554c;
+  --color-text-inverse: #f6f1e7;
+  --color-link: #245643;
+  --color-accent: #245643;
+  --color-accent-hover: #1b4032;
+  --color-accent-contrast: #f6f1e7;
+  --color-accent-soft: #e3ebe4;
+  --color-accent-2: #6b5344;
+  --color-success: #1f5c36;
+  --color-success-soft: #dce8df;
+  --color-warning: #7a4e08;
+  --color-warning-soft: #f3e6cf;
+  --color-danger: #92283a;
+  --color-danger-soft: #f6e2e4;
+  --color-info: #3d5160;
+  --color-info-soft: #e2e8ec;
+  --color-focus-ring: #245643;
+  --color-overlay: rgba(31, 27, 23, 0.32);
+  --color-code-bg: #ddd3c2;
+  --color-code-text: #1f1b17;
+  --glass-blur: var(--blur-sm);
+  --glass-saturate: 120%;
+  --shadow-sm: 0 1px 2px rgba(62, 48, 28, 0.06);
+  --shadow-md: 0 8px 22px rgba(62, 48, 28, 0.08);
+  --shadow-lg: 0 18px 40px rgba(62, 48, 28, 0.12);
+}
+
+/* Faculty and admin — Dark Glass */
+[data-theme="staff"] {
+  --color-scheme: dark;
+  --color-bg: #0a1120;
+  --bg-image:
+    radial-gradient(900px 520px at 0% 0%, rgba(80, 110, 230, 0.16), transparent 60%),
+    radial-gradient(800px 480px at 100% 10%, rgba(140, 110, 240, 0.12), transparent 62%);
+  --color-surface: #111a2d;
+  --color-surface-glass: rgba(17, 26, 45, 0.7);
+  --color-surface-raised: #16213a;
+  --color-surface-sunken: #0d1526;
+  --color-surface-hover: #1a2642;
+  --color-border: rgba(148, 163, 196, 0.16);
+  --color-border-strong: rgba(148, 163, 196, 0.32);
+  --color-text: #e8ecf5;
+  --color-text-muted: #aab5ca;
+  --color-text-subtle: #8a97ae;
+  --color-text-inverse: #0a1120;
+  --color-link: #9db3ff;
+  --color-accent: #7b95ff;
+  --color-accent-hover: #93a8ff;
+  --color-accent-contrast: #0a1120;
+  --color-accent-soft: rgba(123, 149, 255, 0.14);
+  --color-accent-2: #a995f7;
+  --color-success: #62d29a;
+  --color-success-soft: rgba(98, 210, 154, 0.13);
+  --color-warning: #f2bb63;
+  --color-warning-soft: rgba(242, 187, 99, 0.13);
+  --color-danger: #ff8593;
+  --color-danger-soft: rgba(255, 133, 147, 0.13);
+  --color-info: #82c3ff;
+  --color-info-soft: rgba(130, 195, 255, 0.13);
+  --color-focus-ring: #a3b6ff;
+  --color-overlay: rgba(3, 7, 16, 0.62);
+  --color-code-bg: #0d1526;
+  --color-code-text: #e8ecf5;
+  --glass-blur: var(--blur-sm);
+  --glass-saturate: 130%;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+/* Coding workspace — Premium Dark (no glass, minimal distraction) */
+[data-theme="code"] {
+  --color-scheme: dark;
+  --color-bg: #0d1014;
+  --bg-image: none;
+  --color-surface: #14181e;
+  --color-surface-glass: #14181e;
+  --color-surface-raised: #1a1f27;
+  --color-surface-sunken: #0a0c10;
+  --color-surface-hover: #1e242d;
+  --color-border: #262c36;
+  --color-border-strong: #3a4250;
+  --color-text: #d9dee6;
+  --color-text-muted: #a2abb9;
+  --color-text-subtle: #868f9d;
+  --color-text-inverse: #0d1014;
+  --color-link: #9cc0e4;
+  --color-accent: #8fb3d9;
+  --color-accent-hover: #a6c4e3;
+  --color-accent-contrast: #0d1014;
+  --color-accent-soft: rgba(143, 179, 217, 0.12);
+  --color-accent-2: #c3a6e0;
+  --color-success: #6fcf91;
+  --color-success-soft: rgba(111, 207, 145, 0.12);
+  --color-warning: #e6b866;
+  --color-warning-soft: rgba(230, 184, 102, 0.12);
+  --color-danger: #f2878a;
+  --color-danger-soft: rgba(242, 135, 138, 0.12);
+  --color-info: #8fb7e0;
+  --color-info-soft: rgba(143, 183, 224, 0.12);
+  --color-focus-ring: #a6c4e3;
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --color-code-bg: #0a0c10;
+  --color-code-text: #d9dee6;
+  --glass-blur: var(--blur-none);
+  --glass-saturate: 100%;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 44px rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme] {
+    --glass-blur: var(--blur-none);
+    --color-surface-glass: var(--color-surface);
+  }
+}

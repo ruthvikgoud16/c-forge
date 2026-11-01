@@ -1,0 +1,171 @@
+/*
+ * Student experience only. Every selector is under [data-theme="student"],
+ * so staff and coding themes are unchanged. Token values stay in tokens.css.
+ */
+
+[data-theme="student"] .ui-nav {
+  top: 0;
+  margin: calc(var(--space-7) * -1) calc(var(--space-5) * -1) var(--space-9);
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--color-bg) 84%, transparent);
+}
+
+[data-theme="student"] .ui-nav__links {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+[data-theme="student"] .ui-nav__links::-webkit-scrollbar { display: none; }
+
+[data-theme="student"] .ui-nav__link {
+  min-height: var(--control-height-lg);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+[data-theme="student"] .ui-nav__meta {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  letter-spacing: 0;
+}
+
+[data-theme="student"] .card {
+  background: var(--color-surface);
+  box-shadow: var(--elevation-1);
+}
+[data-theme="student"] .learn-continue,
+[data-theme="student"] .learn-unit-card {
+  background: var(--color-surface-raised);
+  box-shadow: var(--elevation-2);
+}
+[data-theme="student"] .meter {
+  background: var(--color-surface-sunken);
+}
+[data-theme="student"] .meter span {
+  background: var(--color-accent);
+}
+
+[data-theme="student"] h1 {
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.03em;
+}
+
+.learn-welcome { padding-top: var(--space-2); }
+.learn-kicker {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-subtle);
+}
+.learn-welcome h1 { margin: var(--space-2) 0 var(--space-4); }
+.learn-lead {
+  margin: 0;
+  max-width: 38rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+.learn-continue h2 { margin-top: 0; }
+
+.learn-continue__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height-lg);
+  margin-top: var(--space-5);
+  padding: 0 var(--space-6);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.learn-continue__action:hover {
+  background: var(--color-accent-hover);
+  text-decoration: none;
+}
+
+.learn-block > h2 { margin-bottom: var(--space-2); }
+.learn-block > .meta { margin-top: 0; }
+
+.learn-unit-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+.learn-unit-card { margin: 0; }
+.learn-unit-card h3 { margin-top: 0; }
+
+.learn-list { margin: var(--space-3) 0; padding-left: 1.15rem; }
+.learn-list li { margin: var(--space-2) 0; }
+
+.learn-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: var(--space-4) 0 0;
+}
+.learn-links a { font-weight: var(--weight-medium); }
+
+.learn-tools {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.learn-tools a {
+  display: flex;
+  align-items: center;
+  min-height: var(--control-height-lg);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+.learn-tools a:hover { background: var(--color-surface-hover); text-decoration: none; }
+
+@media (max-width: 640px) {
+  [data-theme="student"] .ui-nav {
+    margin-top: calc(var(--space-5) * -1);
+    margin-inline: calc(var(--space-4) * -1);
+  }
+  .learn-continue__action { width: 100%; }
+}
+
+[data-theme="student"] .hub-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: 1fr;
+}
+[data-theme="student"] .hub-grid > li {
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+[data-theme="student"] .hub-grid a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-height-md);
+  font-weight: var(--weight-medium);
+}
+
+@media (min-width: 960px) {
+  .learn-unit-grid { grid-template-columns: 1fr 1fr; }
+  .learn-tools { grid-template-columns: 1fr 1fr; }
+  [data-theme="student"] .hub-grid { grid-template-columns: 1fr 1fr; }
+}

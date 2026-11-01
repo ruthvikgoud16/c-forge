@@ -1,0 +1,160 @@
+{
+  "id": "u1-t6-basic-operators",
+  "topicId": "u1-t6",
+  "unitId": "unit-1",
+  "title": "Arithmetic, assignment, relational, and logical operators",
+  "classification": "OFFICIAL",
+  "mode": "learning",
+  "sourceLabel": "Operators: Arithmetic, Assignment, Relational and Logical Operators.",
+  "prerequisites": [
+    { "id": "u1-t5", "label": "Structure of a C program", "href": "/learn/lessons/u1-t5-c-program-structure" }
+  ],
+  "objectives": [
+    "Evaluate +, -, *, /, and % on small integers, including integer division.",
+    "Use = and the compound assignments +=, -=, *=, /=, %=",
+    "Read relational operators == != < > <= >= as questions that produce 0 or 1.",
+    "Read logical && || ! and explain short-circuit in simple English.",
+    "Trace a mixed expression using teaching precedence (detail continues in Unit 2)."
+  ],
+  "completionCriteria": [
+    "Predict integer 7/2 and 7%2 correctly.",
+    "Trace one && expression that skips the second test.",
+    "Knowledge checks passed. Optional: submit add-two-integers via the judge."
+  ],
+  "exerciseId": "22222222-2222-4222-8222-222222222222",
+  "notes": {
+    "introduction": "An operator is a symbol that tells C to compute. This topic covers four families used in almost every later unit: arithmetic, assignment, relational, and logical.",
+    "beginner": "Arithmetic operators combine numbers: + add, - subtract, * multiply, / divide, % remainder. If both sides are int, / keeps only the whole part: 7/2 is 3, not 3.5. Assignment copies a value into a variable with =. Relational operators compare two values and give 1 if the comparison is true, 0 if false. Logical operators combine those 0/1 results: && means both, || means at least one, ! means flip. C uses 0 as false and any non-zero as true.",
+    "formal": "An operator is a token that denotes an operation on one or more operands producing a result. In C, the relational and equality operators yield int 0 or 1. The logical operators && and || guarantee left-to-right evaluation and do not evaluate the right operand if the result is already determined (short-circuit). Integer division truncates toward zero in C99 and later (our judge uses C11).",
+    "terms": [
+      { "term": "Operand", "meaning": "A value an operator works on. In a+b, a and b are operands." },
+      { "term": "Expression", "meaning": "Operators and operands that compute a value, such as a + 2 * b." },
+      { "term": "Integer division", "meaning": "/ on two ints drops the fraction." },
+      { "term": "Modulus %", "meaning": "Remainder after integer division. 7%2 is 1. Both operands should be int in first-year work." },
+      { "term": "Assignment =", "meaning": "Store the right-hand value into the left-hand variable. Not the same as ==." },
+      { "term": "Short-circuit", "meaning": "&& stops if the left side is 0. || stops if the left side is not 0." }
+    ],
+    "revision": [
+      "7/2 → 3 and 7%2 → 1 when both are int.",
+      "= assigns. == compares.",
+      "true/false in C are 1/0 (any non-zero is true).",
+      "&& and || may skip the right operand."
+    ],
+    "examAnswer": "Arithmetic operators are + - * / %. Integer / truncates. Assignment operators store a value. Relational operators compare and yield 0 or 1. Logical && || ! combine conditions; && and || short-circuit."
+  },
+  "mindMap": {
+    "title": "Core operators",
+    "children": [
+      { "title": "Arithmetic + - * / %", "topicId": "u1-t6" },
+      { "title": "Assignment = += …", "topicId": "u1-t6" },
+      { "title": "Relational == != < >", "topicId": "u1-t6" },
+      { "title": "Logical && || !", "topicId": "u1-t6" },
+      { "title": "Next: ++ -- bitwise ?: sizeof", "topicId": "u1-t7" }
+    ]
+  },
+  "body": {
+    "objectives": "You should be able to sit with a pencil and evaluate a+b*c, a+=2, a==b, and a>0 && b>0 without guessing.",
+    "prerequisiteCheck": "You can write main and declare ints (topics 3–5). Reopen structure of a C program if braces still feel new.",
+    "introduction": "C does not wait for Unit 2 to compute. Even a program that only prints a sum uses operators. Wrong / or a mix-up of = and == causes silent wrong answers, not always a compiler error.",
+    "analogy": "A pocket calculator is arithmetic. Writing a number on a sticky note and replacing it is assignment. Asking 'is this mark greater than 40?' is relational. Asking 'is the student present AND the fee paid?' is logical. If the student is absent, you do not even check the fee — that is short-circuit.",
+    "explanation": "Arithmetic. + - * / % work on numbers. Unary minus is the sign: int x = -3;. For ints, 7/2 is 3 because the fraction is dropped toward zero. 7/2.0 is 3.5 because one operand is floating. % needs integer operands in portable first-year code. 7%2 is 1: two fits into seven three times, remainder one. Division by zero is undefined — do not do it.\n\nPrecedence (preview; Unit 2 continues this): * / % are done before + - unless you use parentheses. 2 + 3 * 4 is 14, not 20. Parentheses are allowed and recommended: (2+3)*4 is 20. Associativity for + - * / is left to right: 8-3-2 is (8-3)-2 = 3.\n\nAssignment. = stores. int n; n = 5; Compound forms save repetition: n += 2; means n = n + 2;. The same idea for -= *= /= %=. The left side must be a variable (an lvalue), not 5 = n.\n\nRelational. == equal, != not equal, < > <= >=. Result is int 1 or 0. After int r = (3 < 5); r is 1. A disastrous beginner bug is if (n = 5) which assigns 5 (always non-zero) instead of comparing. That if is almost always a mistake. Write == when you mean compare.\n\nLogical. !x is 0 if x is non-zero, and 1 if x is 0. a && b is 1 only if both are non-zero. a || b is 1 if at least one is non-zero. Evaluation goes left to right. For &&, if a is 0, b is not evaluated. For ||, if a is non-zero, b is not evaluated. This matters when the right side is a function or a scanf — we only mention it so you are not surprised later.\n\nAll of these operators are standard C. There is no vendor extension in this topic.",
+    "syntax": "Arithmetic: a+b a-b a*b a/b a%b\nAssignment: a=b a+=b a-=b a*=b a/=b a%=\nRelational: a==b a!=b a<b a>b a<=b a>=b\nLogical: a&&b a||b !a\nAlways initialise before you read a variable on the right-hand side.",
+    "visual": {
+      "type": "eval-steps",
+      "title": "2 + 3 * 4",
+      "steps": [
+        "See * before +.",
+        "3 * 4 → 12",
+        "2 + 12 → 14"
+      ]
+    },
+    "examples": [
+      {
+        "title": "Integer divide and remainder",
+        "steps": [
+          "int a = 17, b = 5;",
+          "a / b is 3 because 5*3 = 15 and the extra 2 is dropped.",
+          "a % b is 2 because 17 = 5*3 + 2.",
+          "Check: (a/b)*b + (a%b) equals a for these positive ints."
+        ]
+      },
+      {
+        "title": "Relational and logical together",
+        "steps": [
+          "int marks = 42, present = 1;",
+          "marks >= 40 is 1.",
+          "present && (marks >= 40) is 1 && 1 = 1.",
+          "If present is 0, the && result is 0 and the marks test may be skipped."
+        ]
+      },
+      {
+        "title": "Assignment versus equality",
+        "steps": [
+          "int n = 4;",
+          "n = 5; now n is 5.",
+          "n == 5 is 1.",
+          "n == 4 is 0.",
+          "Never write n = 5 when you meant 'is n five?'"
+        ]
+      }
+    ],
+    "execution": "Trace int x = 10; x += 3; x = x / 2; Start 10. += 3 → 13. 13/2 → 6 (int). Final x is 6. printf(\"%d\", x) prints 6.",
+    "trace": {
+      "prompt": "int a=7,b=2; What is a/b and a%b? Write two integers separated by space.",
+      "answer": "3 1",
+      "dimension": "trace"
+    },
+    "predict": {
+      "prompt": "int x=0, y=5; What is the value of x && y ?",
+      "answer": "0",
+      "dimension": "predict"
+    },
+    "mistakes": [
+      "Expecting 7/2 to be 3.5 when both sides are int.",
+      "Using = inside a comparison.",
+      "Using & for AND. & is bitwise (next topic). Logical AND is &&.",
+      "Using % on float in portable teaching code."
+    ],
+    "guided": {
+      "prompt": "Evaluate 2 + 3 * 4. Type the integer result.",
+      "expected": ["14"],
+      "dimension": "predict"
+    },
+    "independent": {
+      "prompt": "On paper, evaluate (4 > 1) && (2 == 2) || 0. Then optionally submit add-two-integers in the studio. What integer does the expression produce?",
+      "answer": "1",
+      "dimension": "independent_write"
+    },
+    "check": [
+      {
+        "id": "q1",
+        "kind": "mcq",
+        "dimension": "syntax",
+        "prompt": "7 / 2 in int arithmetic is:",
+        "choices": ["3.5", "3", "2", "1"],
+        "answer": 1
+      },
+      {
+        "id": "q2",
+        "kind": "mcq",
+        "dimension": "concept",
+        "prompt": "Which operator tests equality?",
+        "choices": ["=", "===", "==", "&"],
+        "answer": 2
+      },
+      {
+        "id": "q3",
+        "kind": "short",
+        "dimension": "predict",
+        "prompt": "Value of !0 (as C would give for the expression).",
+        "answer": "1"
+      }
+    ],
+    "summary": "Arithmetic computes. Assignment stores. Relational asks and answers 0 or 1. Logical combines those answers and may skip work. Integer / drops the fraction. Parentheses beat guessing.",
+    "revision": [
+      "Table the four families with one example each.",
+      "Compute 20/6 and 20%6.",
+      "Explain short-circuit in one kitchen sentence."
+    ]
+  }
+}

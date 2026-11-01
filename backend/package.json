@@ -1,0 +1,44 @@
+{
+  "name": "cforge",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "description": "Private C programming academy — Milestone 1 vertical slice",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3000",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0 --port 3000",
+    "start:web": "next start --hostname 0.0.0.0 --port ${PORT:-3000}",
+    "judge": "node services/judge/src/server.mjs",
+    "judge:docker": "node services/judge/src/server.mjs",
+    "judge:firecracker": "node services/judge-firecracker/src/server.mjs",
+    "judge:firecracker:recover": "node services/judge-firecracker/src/recover.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "migrate": "node scripts/migrate.mjs",
+    "provision-roles": "node scripts/provision-roles.mjs",
+    "rotate-db-passwords": "node scripts/rotate-cforge-role-passwords.mjs",
+    "apply-pg-hba-scram": "node scripts/apply-pg-hba-scram.mjs",
+    "backup": "node scripts/backup-db.mjs",
+    "restore-verify": "node scripts/restore-verify.mjs"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "next": "^15.5.6",
+    "postgres": "^3.4.7",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.8.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "embedded-postgres": "^18.6.0-beta.19",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

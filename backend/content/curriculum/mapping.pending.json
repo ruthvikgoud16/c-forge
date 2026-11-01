@@ -1,0 +1,19 @@
+{
+  "status": "pending",
+  "source": {
+    "type": "college_syllabus_pdf",
+    "filename": null,
+    "sha256": null,
+    "received": false
+  },
+  "officialUnits": [],
+  "officialTopics": [],
+  "practicals": [],
+  "examNotes": [],
+  "unverified": [],
+  "notes": [
+    "Official C programming syllabus PDF has not been provided.",
+    "No OFFICIAL units or topics may be generated until extraction and human review.",
+    "Do not invent marks, hours, or examination weightage."
+  ]
+}

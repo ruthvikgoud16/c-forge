@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { MasteryState } from "@/domain/types";
+import type { ContentSource, MasteryState } from "@/domain/types";
 
 export function Logo({ className, mono }: { className?: string; mono?: boolean }) {
   return (
@@ -26,11 +26,20 @@ export function PendingBadge({ children = "Pending integration" }: { children?: 
   return <Badge variant="pending">{children}</Badge>;
 }
 
-export function SourceNotice({ what = "This content" }: { what?: string }) {
+export function SourceNotice({ what = "This content", source }: { what?: string; source?: ContentSource }) {
+  const material: ContentSource = source ?? (import.meta.env["VITE_CFORGE_DEMO"] === "1" ? "demo" : "original");
+  if (material === "demo") {
+    return (
+      <div role="note" className="flex flex-wrap items-center gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-foreground">
+        <DemoBadge>Demonstration material</DemoBadge>
+        <span>{what} is generated from the syllabus structure and is pending integration of the original teaching package.</span>
+      </div>
+    );
+  }
   return (
-    <div role="note" className="flex flex-wrap items-center gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-foreground">
-      <DemoBadge>Demonstration material</DemoBadge>
-      <span>{what} is generated from the syllabus structure and is pending integration of the original teaching package.</span>
+    <div role="note" className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-surface-2 px-3 py-2 text-xs text-foreground">
+      <Badge variant="outline">Official material</Badge>
+      <span>{what} comes from the official CForge teaching package.</span>
     </div>
   );
 }
@@ -81,7 +90,7 @@ export const stateLabel = (s: MasteryState) => STATE_META[s].label;
 
 export function EmptyState({ title, body, action }: { title: string; body?: string; action?: ReactNode }) {
   return (
-    <div className="rounded-lg border border-dashed border-border bg-surface-1/60 p-8 text-center">
+    <div className="glass-panel rounded-[1.75rem] p-8 text-center">
       <p className="font-display text-lg">{title}</p>
       {body && <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">{body}</p>}
       {action && <div className="mt-4">{action}</div>}

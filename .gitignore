@@ -18,6 +18,7 @@ dist-ssr
 
 # Wrangler / Cloudflare
 .wrangler/
+.vercel/
 .dev.vars
 
 # Editor directories and files
@@ -30,3 +31,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backend runtime — Render builds from backend/; Vercel must ignore it
+backend/node_modules/
+backend/.next/
+backend/coverage/
+backend/test-results/
+backend/playwright-report/
+backend/*.tsbuildinfo
+backend/.env
+backend/.env.local
+backend/.env.*.local
+db/cforge_verified_roster_2026-10-31.csv
+*.dump
+*.sql.gz
+*.backup
+*.pem
+*.key
+secrets/
